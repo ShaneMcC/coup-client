@@ -2,14 +2,14 @@
   <div>
     <button @click="connect">Connect</button>
     <hr>
-    Connecting to server...
+    Connecting to {{ $appConfig.siteName }} server...
   </div>
 </template>
 
 <script>
 
 export default {
-  inject: ['$ioSocket'],
+  inject: ['$ioSocket', '$appConfig'],
 
   methods: {
     connect() {

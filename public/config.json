@@ -1,0 +1,4 @@
+{
+    "siteName": "Coup Client",
+    "server": "ws://:3000/"
+}
