@@ -33,7 +33,7 @@
                 Game Events:
 
                 <ul>
-                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActions')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActionss')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
             </div>
         </div>
@@ -53,12 +53,8 @@ export default {
     data() {
         return {
             gameLoaded: false,
-            preGame: true,
             gameEvents: [],
-            availableActions: {
-                "READY": { name: "Ready" },
-                "SETNAME": { name: 'Change Name', prompt: 'Enter new name' },
-            },
+            availableActions: {},
             players: {},
 
             activePlayer: '',
@@ -96,21 +92,6 @@ export default {
             this.$ioSocket.disconnect();
         },
 
-        checkAllReady() {
-            var allReady = true;
-            for (const p in this.players) {
-                if (!this.players[p].ready) {
-                    allReady = false;
-                    break;
-                }
-            }
-            if (allReady) {
-                this.availableActions["STARTGAME"] = { name: "Start Game" };
-            } else {
-                delete this.availableActions["STARTGAME"];
-            }
-        },
-
         newActions(actions) {
             this.availableActions = actions;
         },
@@ -122,7 +103,6 @@ export default {
 
         displayEvent(event) {
             event = JSON.parse(JSON.stringify(event));
-            console.log(event);
 
             var date = event.date;
             var type = event.__type;
@@ -149,25 +129,14 @@ export default {
 
             this.$events.on("removePlayer", (e) => {
                 delete this.players[e.id];
-                this.checkAllReady();
             });
 
             this.$events.on("playerReady", (e) => {
-                if (e.player == this.myPlayerID) {
-                    this.availableActions["UNREADY"] = { name: "Unready" };
-                    delete this.availableActions["READY"];
-                }
                 this.players[e.player].ready = true;
-                this.checkAllReady();
             });
 
             this.$events.on("playerNotReady", (e) => {
-                if (e.player == this.myPlayerID) {
-                    this.availableActions["READY"] = { name: "Ready" };
-                    delete this.availableActions["UNREADY"];
-                }
                 this.players[e.player].ready = false;
-                this.checkAllReady();
             });
 
             this.$events.on("setPlayerName", (e) => {
@@ -175,16 +144,10 @@ export default {
             });
 
             this.$events.on("gameOver", () => {
-                this.availableActions = {};
+                
             });
 
             this.$events.on("startGame", () => {
-                this.preGame = false;
-
-                delete this.availableActions["UNREADY"];
-                delete this.availableActions["STARTGAME"];
-                delete this.availableActions["SETNAME"];
-
                 for (const p in this.players) {
                     delete this.players[p]['actions']['KICK'];
                 }
