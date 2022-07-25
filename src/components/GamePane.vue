@@ -33,7 +33,7 @@
                 Game Events:
 
                 <ul>
-                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActionss')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActions')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
             </div>
         </div>
