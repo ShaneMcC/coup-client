@@ -1,6 +1,6 @@
 <template>
     <span>
-        <br><button :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
+        <button :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
     </span>
 </template>
 
@@ -66,4 +66,8 @@ export default {
 </script>
 
 <style scoped>
+button {
+    padding: 10px 20px;;
+    margin: 10px;
+}
 </style>

@@ -10,21 +10,21 @@
                 We are spectating {{ myGameID }}
             </div>
 
-            <div class="actions" v-if="players[myPlayerID]">
-                <hr>
-                Available Actions:
-
-                <div class="actionPanels">
-                    <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction"></ActionPanel>
-                </div>
-            </div>
-
             <div class="players">
                 <hr>
                 Players:
 
                 <div class="playerPanels">
                     <PlayerPanel v-for="(player, playerID) in players" :key="playerID" :game="myGameID" :player="player" :self="players[myPlayerID]"></PlayerPanel>
+                </div>
+            </div>
+
+            <div class="actions" v-if="players[myPlayerID]">
+                <hr>
+                Available Actions:
+
+                <div class="actionPanels">
+                    <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction"></ActionPanel>
                 </div>
             </div>
 

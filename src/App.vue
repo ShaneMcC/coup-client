@@ -16,12 +16,16 @@ import ConnectingPane from "./components/ConnectingPane.vue";
 import PreGamePane from "./components/PreGamePane.vue";
 import GamePane from "./components/GamePane.vue";
 
+import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
+
+const randomUsername = uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
+
 export default {
     inject: ["$ioSocket"],
 
     data() {
         return {
-            playerName: "Player1",
+            playerName: randomUsername,
 
             connected: false,
             inGame: false,
