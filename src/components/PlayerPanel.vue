@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .player {
   display: inline-block;
   width: 200px;
@@ -56,36 +56,36 @@ export default {
   padding: 5px;
 
   background-color: lightgrey;
-}
 
-.influence {
-  text-align: center;
-  width: 150px;
-  margin: 5px auto;
-  padding: 3px;
-  border: 4px solid black;
-}
+  .influence {
+    text-align: center;
+    width: 150px;
+    margin: 5px auto;
+    padding: 3px;
+    border: 4px solid black;
 
-.influence.discarded {
-  border: 2px dashed grey;
-}
+    &.discarded {
+      border: 2px dashed grey;
+    }
+  }
 
-.coins,
-.name {
-  text-align: center;
-}
+  .coins,
+  .name {
+    text-align: center;
+  }
 
-.ready {
-  border: 4px solid green;
-  background-color: white;
-}
+  &.ready {
+    border: 4px solid green;
+    background-color: white;
+  }
 
-.active {
-  background-color: lightgreen;
-}
+  &.active {
+    background-color: lightgreen;
+  }
 
-.dead {
-  border: 4px solid red;
-  background-color: lightcoral;
+  &.dead {
+    border: 4px solid red;
+    background-color: lightcoral;
+  }
 }
 </style>

@@ -1,83 +1,49 @@
 <template>
-    <div>
-        <ConnectingPane v-if="!connected">
-        </ConnectingPane>
+  <div>
+    <app-header></app-header>
 
-        <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" v-model:rejoinPlayerID="myPlayerID" v-model:rejoinGameID="myGameID">
-        </PreGamePane>
+    <div class="container-fluid">
+      <div class="row" v-if="showSidebar">
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-light sidebar" id="sidebar">
+        </nav>
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+          <router-view></router-view>
+        </main>
+      </div>
 
-        <GamePane v-if="connected && inGame" :myPlayerID="myPlayerID" :myGameID="myGameID" :initialEvents="gameEvents">
-        </GamePane>
+      <div class="row" v-else>
+        <main class="col-sm-12 pt-3">
+          <router-view></router-view>
+        </main>
+      </div>
     </div>
+
+    <app-footer></app-footer>
+
+  </div>
 </template>
 
 <script>
-import ConnectingPane from "./components/ConnectingPane.vue";
-import PreGamePane from "./components/PreGamePane.vue";
-import GamePane from "./components/GamePane.vue";
 
-import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
-
-const randomUsername = uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
+import Header from '@/components/common/AppHeader.vue';
+import Footer from '@/components/common/AppFooter.vue';
 
 export default {
-    inject: ["$ioSocket"],
-
-    data() {
-        return {
-            playerName: randomUsername,
-
-            connected: false,
-            inGame: false,
-
-            myPlayerID: "Alice",
-            myGameID: "TestGame",
-
-            gameEvents: [],
-        };
-    },
-    created() {
-        this.$ioSocket.on("connect", () => {
-            this.reset();
-            this.connected = true;
-        });
-
-        this.$ioSocket.on("disconnect", () => {
-            this.reset();
-        });
-
-        this.$ioSocket.on("gameJoined", (arg) => {
-            this.myPlayerID = arg.playerID;
-            this.myGameID = arg.gameID;
-
-            this.inGame = true;
-        });
-
-        this.$ioSocket.on("handleGameEvent", (event) => {
-            this.gameEvents.push(event);
-        });
-    },
-
-    mounted() {
-        this.$ioSocket.connect();
-    },
-
-    unmounted() {
-        this.$ioSocket.disconnect();
-    },
-
-    methods: {
-        reset() {
-            this.connected = false;
-            this.inGame = false;
-            this.gameStarted = false;
-            this.gameEvents = [];
-        },
-    },
-
-    components: { ConnectingPane, PreGamePane, GamePane }
+  components: {
+    appHeader: Header,
+    appFooter: Footer,
+  },
 }
 </script>
 
 <style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  padding-top: 50px;
+  margin-bottom: 60px;
+}
 </style>

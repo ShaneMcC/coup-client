@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 button {
     padding: 10px 20px;;
     margin: 10px;

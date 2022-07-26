@@ -1,6 +1,7 @@
 <template>
     <div>
         <button @click="disconnect">Disconnect</button>
+        <!-- <button @click="leave">Leave</button> -->
         <hr>
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">
@@ -46,7 +47,7 @@ import PlayerPanel from './PlayerPanel.vue';
 import ActionPanel from './ActionPanel.vue';
 
 export default {
-    inject: ["$ioSocket"],
+    inject: ["$ioSocket", "$appConfig"],
 
     props: ["myGameID", "myPlayerID", "initialEvents"],
 
@@ -90,6 +91,11 @@ export default {
 
         disconnect() {
             this.$ioSocket.disconnect();
+        },
+
+        leave() {
+            this.$ioSocket.disconnect();
+            this.$router.push(`/game/${this.myGameID}`);
         },
 
         newActions(actions) {
@@ -143,8 +149,9 @@ export default {
                 this.players[e.player]["name"] = e.name;
             });
 
-            this.$events.on("gameOver", () => {
-                
+            this.$events.on("gameOver", (e) => {
+                this.activePlayer = e.winner;
+                this.players[this.activePlayer].active = true;
             });
 
             this.$events.on("startGame", () => {
@@ -185,8 +192,6 @@ export default {
             });
 
             this.$events.on("beginPlayerTurn", (e) => {
-                this.availableActions = {};
-
                 if (this.activePlayer) {
                     this.players[this.activePlayer].active = false;
                 }
