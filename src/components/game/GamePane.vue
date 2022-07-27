@@ -142,7 +142,6 @@ export default {
         },
 
         deleteAction(actionID) {
-            console.log(actionID);
             delete this.availableActions[actionID];
         },
 
@@ -314,6 +313,14 @@ export default {
             });
 
             this.$events.on("counterablePlayerAction", (e) => {
+                if (e.target) {
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`);
+                } else {
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action}`);
+                }
+            });
+
+            this.$events.on("challengeablePlayerAction", (e) => {
                 if (e.target) {
                     this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`);
                 } else {
