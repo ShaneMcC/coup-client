@@ -1,7 +1,7 @@
 <template>
     <div>
         <form @submit.prevent="$emit('connect', adminToken)">
-            Admin token: <input v-model="adminToken">
+            Admin token: <input type="password" v-model="adminToken">
 
             <button type="submit">Connect</button>
         </form>
