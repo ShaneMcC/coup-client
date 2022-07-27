@@ -4,7 +4,7 @@
       {{ player.name }}
     </div>
 
-    <div class="coins">
+    <div v-if="player.coins !== undefined" class="coins">
       Coins: {{ player.coins }}
     </div>
 

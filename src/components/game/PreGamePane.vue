@@ -4,24 +4,28 @@
             <div class="d-flex flex-row align-items-center flex-wrap">
                 <label for="playerName">Player Name:</label>
                 <input id="playerName" class="form-control w-auto mx-2" type="text" :value="playerName" @input="this.$emit('update:playerName', $event.target.value);">
-                <button class="btn btn-sm btn-success" @click.prevent="resetPlayerName">Random Name</button>
+                <button class="btn btn-sm btn-success" @click.prevent="randomPlayerName">Random Name</button>
                 &nbsp;
                 <button class="btn btn-sm btn-primary" type="submit">Join Game</button>
             </div>
         </form>
-        <br>
-        <br>
-        <button class="btn btn-sm btn-info" @click="spectateGame">Spectate Game</button>
+
+        <div v-if="showSpectateButton">
+            <br>
+            <br>
+            <button class="btn btn-sm btn-info" @click="spectateGame">Spectate Game</button>
+        </div>
     </div>
 </template>
 
 <script>
 
 import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
+import { nextTick } from 'vue'
 
 export default {
     inject: ["$ioSocket"],
-    props: ['playerName', 'gameID'],
+    props: ['playerName', 'gameID', 'showSpectateButton'],
 
     methods: {
         spectateGame() {
@@ -32,9 +36,13 @@ export default {
             this.$ioSocket.emit("spectateGame", this.gameID);
         },
 
-        resetPlayerName() {
+        randomPlayerName() {
             this.$emit('update:playerName', uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' }));
-            localStorage.removeItem('playerName');
+
+            // Remove the value as soon as vue has put it into the DOM so that the random name isn't saved.
+            nextTick(() => {
+                localStorage.removeItem('playerName');
+            });
         },
 
         joinGame() {

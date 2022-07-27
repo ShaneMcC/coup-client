@@ -6,7 +6,7 @@
         </ConnectingPane>
 
         <div v-if="gameExists">
-            <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" :gameID="myGameID">
+            <PreGamePane v-if="connected && !inGame" :showSpectateButton="true" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
             <GamePane v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
@@ -26,8 +26,6 @@ import ConnectingPane from "@/components/common/ConnectingPane.vue";
 import PreGamePane from "@/components/game/PreGamePane.vue";
 import GamePane from "@/components/game/GamePane.vue";
 import AlertsPane from "@/components/common/AlertsPane.vue";
-
-import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
 
 export default {
     inject: ["$ioSocket"],
@@ -49,7 +47,7 @@ export default {
             alerts: [],
 
             get playerName() {
-                return localStorage.getItem('playerName') || uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
+                return localStorage.getItem('playerName') || '';
             },
             set playerName(value) {
                 localStorage.setItem('playerName', value);
