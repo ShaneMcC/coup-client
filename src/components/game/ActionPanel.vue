@@ -17,6 +17,10 @@ export default {
 
             if (this.action.prompt) {
                 var val = prompt(this.action.prompt);
+
+                // TODO: This shouldn't be here.
+                if (actionName == 'SETNAME') { localStorage.setItem('playerName', val); }
+
                 if (val != undefined) {
                     this.$ioSocket.emit("action", this.myGameID, actionName, val);
                 }

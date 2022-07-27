@@ -34,7 +34,6 @@ export default {
 
     data() {
         return {
-            playerName: '',
             connectErrorMessage: '',
 
             connected: false,
@@ -48,8 +47,16 @@ export default {
 
             gameEvents: [],
             alerts: [],
+
+            get playerName() {
+                return localStorage.getItem('playerName') || uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
+            },
+            set playerName(value) {
+                localStorage.setItem('playerName', value);
+            }
         };
     },
+
     created() {
         this.$ioSocket.on("connect", this.handleConnect);
         this.$ioSocket.on("connect_error", this.handleConnectError);
@@ -159,7 +166,7 @@ export default {
         },
 
         handleCommandError(event) {
-            this.alerts.push({type: 'danger', message: event.error});
+            this.alerts.push({ type: 'danger', message: event.error });
         },
 
         removeAlert(alertId) {
@@ -175,7 +182,6 @@ export default {
             this.gameStateKnown = false;
             this.gameJoinAttempted = false;
 
-            this.playerName = uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
             this.myPlayerID = this.$route.params.playerId;
             this.myGameID = this.$route.params.gameId;
 

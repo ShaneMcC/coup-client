@@ -17,12 +17,23 @@ export default {
     data() {
         return {
             connectErrorMessage: "",
-            adminToken: '',
             connected: false,
+
+            get adminToken() {
+                return localStorage.getItem('adminToken') || '';
+            },
+            set adminToken(value) {
+                localStorage.setItem('adminToken', value);
+            }
         };
     },
     unmounted() {
         this.disconnect();
+    },
+    mounted() {
+        if (this.adminToken != '') {
+            this.connect();
+        }
     },
     methods: {
         connect() {
