@@ -44,6 +44,7 @@ export default {
             inGame: false,
             gameExists: false,
             gameStateKnown: false,
+            gameJoinAttempted: false,
 
             myPlayerID: this.$route.params.playerId,
             myGameID: this.$route.params.gameId,
@@ -68,7 +69,6 @@ export default {
 
     mounted() {
         this.$ioSocket.connect();
-        this.$ioSocket.emit('checkGame', this.myGameID);
     },
 
     unmounted() {
@@ -119,9 +119,10 @@ export default {
         },
 
         handleGameExists(event) {
-            if (event.game == this.myGameID) {
+            if (!this.gameJoinAttempted && event.game == this.myGameID) {
                 this.gameExists = true;
                 this.gameStateKnown = true;
+                this.gameJoinAttempted = true;
 
                 if (this.myPlayerID) {
                     this.$ioSocket.emit("rejoinGame", this.myGameID, this.myPlayerID);
@@ -173,6 +174,7 @@ export default {
             this.gameEvents = [];
             this.gameExists = false;
             this.gameStateKnown = false;
+            this.gameJoinAttempted = false;
 
             this.playerName = uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
             this.myPlayerID = this.$route.params.playerId;

@@ -5,7 +5,7 @@
         <hr>
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">
-                We are <strong>{{ myPlayerID }}</strong> in {{ myGameID }}
+                We are <strong>{{ myPlayerID }}</strong>
             </div>
             <div v-else>
                 We are spectating {{ myGameID }}
