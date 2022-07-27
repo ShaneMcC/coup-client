@@ -1,11 +1,15 @@
 <template>
     <div>
+        <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
+
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
         </ConnectingPane>
 
         <div v-if="connected">
-            <button @click="createGame">Create new Game</button>
-            <hr>
+            <div v-if="gameCreationEnabled">
+                <button @click="createGame">Create new Game</button>
+                <hr>
+            </div>
 
             Game ID: <input type="text" v-model="joinGameId">
             <button @click="joinGame">Join Existing Game</button>
@@ -15,6 +19,7 @@
 
 <script>
 import ConnectingPane from "@/components/common/ConnectingPane.vue";
+import AlertsPane from "@/components/common/AlertsPane.vue";
 
 export default {
     inject: ["$ioSocket"],
@@ -23,7 +28,9 @@ export default {
         return {
             joinGameId: '',
             connectErrorMessage: '',
-            connected: false
+            connected: false,
+            gameCreationEnabled: false,
+            alerts: [],
         };
     },
     created() {
@@ -31,6 +38,9 @@ export default {
         this.$ioSocket.on("connect_error", this.handleConnectError);
         this.$ioSocket.on("disconnect", this.handleDisconnect);
         this.$ioSocket.on("gameCreated", this.handleGameCreated);
+        this.$ioSocket.on("gameCreationEnabled", this.handleGameCreationEnabled);
+        this.$ioSocket.on("commandError", this.handleCommandError);
+        this.$ioSocket.on("error", this.handleCommandError);
     },
 
     mounted() {
@@ -44,6 +54,9 @@ export default {
         this.$ioSocket.off("connect_error", this.handleConnectError);
         this.$ioSocket.off("disconnect", this.handleDisconnect);
         this.$ioSocket.off("gameCreated", this.handleGameCreated);
+        this.$ioSocket.off("gameCreationEnabled", this.handleGameCreationEnabled);
+        this.$ioSocket.off("commandError", this.handleCommandError);
+        this.$ioSocket.off("error", this.handleCommandError);
     },
 
     methods: {
@@ -64,6 +77,18 @@ export default {
             this.$router.push(`/game/${arg.game}`);
         },
 
+        handleGameCreationEnabled(arg) {
+            this.gameCreationEnabled = arg.value;
+        },
+
+        handleCommandError(event) {
+            this.alerts.push({type: 'danger', message: event.error});
+        },
+
+        removeAlert(alertId) {
+            this.alerts.splice(alertId, 1);
+        },
+
         reset() {
             this.connected = false;
             this.connectErrorMessage = '';
@@ -78,7 +103,7 @@ export default {
         }
     },
 
-    components: { ConnectingPane }
+    components: { ConnectingPane, AlertsPane }
 }
 </script>
 

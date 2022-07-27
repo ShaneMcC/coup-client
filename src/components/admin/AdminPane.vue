@@ -1,9 +1,12 @@
 <template>
     <div>
         <button @click="createGame">Create new Game</button>
-        <br>
+        <br><br>
         <button @click="refresh">Refresh</button>
-        <br>
+        <br><br>
+        <button v-if="!serverConfig.publicGames" @click="allowPublicGames">Allow Public Games</button>
+        <button v-if="serverConfig.publicGames" @click="disallowPublicGames">Disallow Public Games</button>
+        <br><br>
 
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
 
@@ -56,6 +59,7 @@ export default {
             knownGames: {},
             savedGames: {},
             alerts: [],
+            serverConfig: {},
         }
     },
 
@@ -64,6 +68,7 @@ export default {
 
         this.$ioSocket.on("gamesAvailable", this.handleGamesAvailable);
         this.$ioSocket.on("savedGamesAvailable", this.handleSavedGames);
+        this.$ioSocket.on("serverConfig", this.handleServerConfig);
         this.$ioSocket.on("commandError", this.handleCommandError);
         this.$ioSocket.on("error", this.handleCommandError);
         this.$ioSocket.on("success", this.handleCommandSuccess);
@@ -73,6 +78,7 @@ export default {
     unmounted() {
         this.$ioSocket.off("gamesAvailable", this.handleGamesAvailable);
         this.$ioSocket.off("savedGamesAvailable", this.handleSavedGames);
+        this.$ioSocket.off("serverConfig", this.handleServerConfig);
         this.$ioSocket.off("commandError", this.handleCommandError);
         this.$ioSocket.off("error", this.handleCommandError);
         this.$ioSocket.off("success", this.handleCommandSuccess);
@@ -81,6 +87,14 @@ export default {
     methods: {
         createGame() {
             this.$ioSocket.emit("createGame");
+        },
+
+        allowPublicGames() {
+            this.$ioSocket.emit("allowPublicGames");
+        },
+
+        disallowPublicGames() {
+            this.$ioSocket.emit("disallowPublicGames");
         },
 
         killGame(gameId) {
@@ -105,6 +119,7 @@ export default {
 
         refresh() {
             this.$ioSocket.emit("listGames");
+            this.$ioSocket.emit("getServerConfig");
         },
 
         handleGamesAvailable(games) {
@@ -113,6 +128,10 @@ export default {
 
         handleSavedGames(games) {
             this.savedGames = games;
+        },
+
+        handleServerConfig(serverConfig) {
+            this.serverConfig = serverConfig;
         },
 
         handleCommandError(event) {
