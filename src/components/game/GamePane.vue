@@ -224,6 +224,12 @@ export default {
                 this.players[e.player].coins -= e.coins;
             });
 
+            this.$events.on("playerSpentCoins", (e) => {
+                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} spent ${e.coins} coins`);
+
+                this.players[e.player].coins -= e.coins;
+            });
+
             this.$events.on("allocateInfluence", (e) => {
                 this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} was allocated influence: ${e.influence}`);
 
