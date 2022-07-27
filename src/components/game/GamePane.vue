@@ -179,7 +179,7 @@ export default {
                 this.players[e.player].influence.push(e.influence);
             });
 
-            this.$events.on("discardInfluence", (e) => {
+            const discardInfluenceHandler = (e) => {
                 var influenceLocation = -1;
 
                 if (e.player == this.myPlayerID) {
@@ -192,11 +192,14 @@ export default {
                 if (influenceLocation > -1) {
                     this.players[e.player].influence.splice(influenceLocation, 1);
                 }
+            }
 
-                if (!e.deck) {
-                    this.players[e.player].discardedInfluence.push(e.influence);
-                }
+            this.$events.on("discardInfluence", (e) => {
+                discardInfluenceHandler(e);
+                this.players[e.player].discardedInfluence.push(e.influence);
             });
+
+            this.$events.on("returnInfluenceToDeck", discardInfluenceHandler);
 
             this.$events.on("beginPlayerTurn", (e) => {
                 if (this.activePlayer) {
