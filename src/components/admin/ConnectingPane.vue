@@ -1,7 +1,7 @@
 <template>
     <div>
-        <form @submit.prevent="$emit('connect', adminToken)">
-            Admin token: <input type="password" v-model="adminToken">
+        <form @submit.prevent="$emit('connect')">
+            Admin token: <input type="password" :value="adminToken" @input="this.$emit('update:adminToken', $event.target.value)">
 
             <button type="submit">Connect</button>
         </form>
@@ -15,13 +15,7 @@
 <script>
 
 export default {
-    props: ['connectErrorMessage'],
-
-    data() {
-        return {
-            adminToken: '',
-        };
-    },
+    props: ['connectErrorMessage', 'adminToken'],
 }
 </script>
 

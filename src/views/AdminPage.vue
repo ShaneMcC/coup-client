@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage" @connect="connect">
+        <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage" @connect="connect" v-model:adminToken="adminToken">
         </ConnectingPane>
 
         <AdminPane v-if="connected" :adminSocket="$ioSocket">
@@ -17,6 +17,7 @@ export default {
     data() {
         return {
             connectErrorMessage: "",
+            adminToken: '',
             connected: false
         };
     },
@@ -24,8 +25,8 @@ export default {
         this.disconnect();
     },
     methods: {
-        connect(adminToken) {
-            this.$ioSocket = this.$ioManager.socket("/admin", { auth: { token: adminToken } });
+        connect() {
+            this.$ioSocket = this.$ioManager.socket("/admin", { auth: { token: this.adminToken } });
             this.$ioSocket.on("connect", this.handleConnect);
             this.$ioSocket.on("connect_error", this.handleConnectError);
             this.$ioSocket.on("disconnect", this.handleDisconnect);
