@@ -1,11 +1,26 @@
 <template>
     <div>
+        <strong>Create Game:</strong>
         <form class="form" @submit.prevent="createGame">
             <div class="d-flex flex-row align-items-center flex-wrap">
                 <label for="newGameID">Game ID:</label>
                 <input id="newGameID" class="form-control w-auto mx-2" v-model="newGameID">
 
                 <button class="btn btn-sm btn-primary" type="submit">Create new Game</button>
+            </div>
+        </form>
+        <br><br>
+
+        <strong>Create Test Game:</strong>
+        <form class="form" @submit.prevent="createTestGame">
+            <div class="d-flex flex-row align-items-center flex-wrap">
+                <label for="newTestGameID">Game ID:</label>
+                <input id="newTestGameID" class="form-control w-auto mx-2" v-model="newTestGameID">
+
+                <label for="newTestGamePlayerCount">Players:</label>
+                <input id="newTestGamePlayerCount" class="form-control w-auto mx-2" v-model="newTestGamePlayerCount">
+
+                <button class="btn btn-sm btn-primary" type="submit">Create new Test Game</button>
             </div>
         </form>
         <br><br>
@@ -96,6 +111,8 @@ export default {
             alerts: [],
             serverConfig: {},
             newGameID: '',
+            newTestGameID: '',
+            newTestGamePlayerCount: 3,
         }
     },
 
@@ -126,6 +143,10 @@ export default {
     methods: {
         createGame() {
             this.$ioSocket.emit("createGame", this.newGameID);
+        },
+
+        createTestGame() {
+            this.$ioSocket.emit("createTestGame", this.newTestGameID, this.newTestGamePlayerCount);
         },
 
         allowPublicGames() {
