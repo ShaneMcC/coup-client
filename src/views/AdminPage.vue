@@ -18,7 +18,7 @@ export default {
         return {
             connectErrorMessage: "",
             adminToken: '',
-            connected: false
+            connected: false,
         };
     },
     unmounted() {
@@ -26,7 +26,13 @@ export default {
     },
     methods: {
         connect() {
+            if (this.$ioSocket) {
+                this.$ioSocket.disconnect();
+                delete this.$ioSocket;
+            }
+
             this.$ioSocket = this.$ioManager.socket("/admin", { auth: { token: this.adminToken } });
+            this.$ioSocket.auth.token = this.adminToken; // Force the change as the above sometimes doesn't.
             this.$ioSocket.on("connect", this.handleConnect);
             this.$ioSocket.on("connect_error", this.handleConnectError);
             this.$ioSocket.on("disconnect", this.handleDisconnect);
@@ -35,7 +41,7 @@ export default {
 
         disconnect() {
             this.reset();
-            
+
             if (this.$ioSocket) {
                 this.$ioSocket.disconnect();
                 delete this.$ioSocket;
