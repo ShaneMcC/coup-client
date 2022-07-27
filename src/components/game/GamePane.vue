@@ -34,6 +34,15 @@
                     <div v-if="Object.keys(availableActions).length == 0" class="actionPanels">
                         <strong>No actions available.</strong>
                     </div>
+
+                    <form class="form" @submit.prevent="sendChatMessage">
+                        <div class="d-flex flex-row align-items-center flex-wrap">
+                            <label for="chatMessage">Chat:</label>
+                            <input id="chatMessage" class="form-control w-auto mx-2" v-model="chatMessage">
+
+                            <button class="btn btn-sm btn-primary" type="submit">Send</button>
+                        </div>
+                    </form>
                 </div>
 
 
@@ -82,6 +91,7 @@ export default {
             availableActions: {},
             players: {},
             myPlayerID: '',
+            chatMessage: '',
 
             activePlayer: '',
         };
@@ -136,6 +146,11 @@ export default {
             delete this.availableActions[actionID];
         },
 
+        sendChatMessage() {
+            this.$ioSocket.emit("action", this.myGameID, 'CHAT', this.chatMessage);
+            this.chatMessage = '';
+        },
+
         displayEvent(event) {
             event = JSON.parse(JSON.stringify(event));
 
@@ -147,6 +162,10 @@ export default {
             delete event.game;
 
             return `[${date}] ${type} - ${JSON.stringify(event)}`;
+        },
+
+        htmlEntities(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         },
 
         addInternalHandlers() {
@@ -167,29 +186,29 @@ export default {
 
                 if (e.self) {
                     this.myPlayerID = e.id;
-                    this.gameLog.unshift(`[${e.date}] You joined the game as ${this.players[e.id].name}`);
+                    this.gameLog.unshift(`[${e.date}] You joined the game as ${this.htmlEntities(this.players[e.id].name)}`);
                 } else {
-                    this.gameLog.unshift(`[${e.date}] ${this.players[e.id].name} joined the game`);
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} joined the game`);
                 }
             });
 
             this.$events.on("removePlayer", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.id].name} left the game`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} left the game`);
                 delete this.players[e.id];
             });
 
             this.$events.on("playerReady", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} is ready`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is ready`);
                 this.players[e.player].ready = true;
             });
 
             this.$events.on("playerNotReady", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} is not ready`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is not ready`);
                 this.players[e.player].ready = false;
             });
 
             this.$events.on("setPlayerName", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} is now ${e.name}`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is now ${this.htmlEntities(e.name)}`);
 
                 this.players[e.player]["name"] = e.name;
                 if (e.player == this.myPlayerID) {
@@ -198,7 +217,7 @@ export default {
             });
 
             this.$events.on("gameOver", (e) => {
-                this.gameLog.unshift(`[${e.date}] Game over. ${this.players[e.winner].name} was the winner.`);
+                this.gameLog.unshift(`[${e.date}] Game over. ${this.htmlEntities(this.players[e.winner].name)} was the winner.`);
 
                 this.activePlayer = e.winner;
                 this.players[this.activePlayer].active = true;
@@ -213,25 +232,25 @@ export default {
             });
 
             this.$events.on("playerGainedCoins", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} gained ${e.coins} coins`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} gained ${e.coins} coins`);
 
                 this.players[e.player].coins += e.coins;
             });
 
             this.$events.on("playerLostCoins", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} lost ${e.coins} coins`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} lost ${e.coins} coins`);
 
                 this.players[e.player].coins -= e.coins;
             });
 
             this.$events.on("playerSpentCoins", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} spent ${e.coins} coins`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} spent ${e.coins} coins`);
 
                 this.players[e.player].coins -= e.coins;
             });
 
             this.$events.on("allocateInfluence", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} was allocated influence: ${e.influence}`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} was allocated influence: ${e.influence}`);
 
                 this.players[e.player].influence.push(e.influence);
             });
@@ -253,14 +272,14 @@ export default {
 
             this.$events.on("discardInfluence", (e) => {
                 discardInfluenceHandler(e);
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} discarded influence: ${e.influence}`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} discarded influence: ${e.influence}`);
                 this.players[e.player].discardedInfluence.push(e.influence);
             });
 
             this.$events.on("returnInfluenceToDeck", discardInfluenceHandler);
 
             this.$events.on("beginPlayerTurn", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} started their turn.`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} started their turn.`);
 
                 if (this.activePlayer) {
                     this.players[this.activePlayer].active = false;
@@ -276,34 +295,46 @@ export default {
 
             this.$events.on("playerPerformedAction", (e) => {
                 if (e.target) {
-                    this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} performed action ${e.action} on ${this.players[e.target].name}`);
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} performed action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`);
                 } else {
-                    this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} performed action ${e.action}`);
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} performed action ${e.action}`);
                 }
             });
 
             this.$events.on("counterablePlayerAction", (e) => {
                 if (e.target) {
-                    this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} is attempting action ${e.action} on ${this.players[e.target].name}`);
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`);
                 } else {
-                    this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} is attempting action ${e.action}`);
+                    this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action}`);
                 }
             });
 
             this.$events.on("playerPassed", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} allowed the action.`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} allowed the action.`);
             });
 
             this.$events.on("playerCountered", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.challenger].name} countered ${this.players[e.challenger].name}'s ${e.action} with: ${e.counter}.`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.challenger].name)} countered ${this.htmlEntities(this.players[e.challenger].name)}'s ${e.action} with: ${e.counter}.`);
             });
 
             this.$events.on("playerPassedChallenge", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} passed the challenge by revealing ${e.influence}.`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} passed the challenge by revealing ${e.influence}.`);
             });
 
             this.$events.on("playerFailedChallenge", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.players[e.player].name} failed the challenge.`);
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} failed the challenge.`);
+            });
+
+            this.$events.on("chatMessage", (e) => {
+                this.gameLog.unshift(`[${e.date}] &lt;${this.htmlEntities(this.players[e.player].name)}&gt; ${this.htmlEntities(e.message)}`);
+            });
+
+            this.$events.on("serverMessage", (e) => {
+                this.gameLog.unshift(`[${e.date}] <strong>Server Message:</strong> ${this.htmlEntities(e.message)}`);
+            });
+
+            this.$events.on("adminMessage", (e) => {
+                this.gameLog.unshift(`[${e.date}] <strong>Admin Message:</strong> ${this.htmlEntities(e.message)}`);
             });
         }
     },

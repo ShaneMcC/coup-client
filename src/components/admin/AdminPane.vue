@@ -58,6 +58,7 @@
                     <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
                     <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
                     <button class="btn btn-sm btn-secondary" @click="adminEmitEvent(gameID)">Emit Event</button>
+                    <button class="btn btn-sm btn-secondary" @click="sendAdminMessage(gameID)">Send Message</button>
                 </div>
 
                 <div class="meta">
@@ -213,6 +214,14 @@ export default {
                 }
             } else {
                 this.alerts.push({ type: 'danger', message: 'Event data failed to parse, not emited.' });
+            }
+        },
+
+
+        sendAdminMessage(gameId, message) {
+            if (message == undefined || message.length == 0) { message = prompt('Message:'); }
+            if (message != undefined && message.length > 0) {
+                this.$ioSocket.emit("sendAdminMessage", gameId, message);
             }
         },
 
