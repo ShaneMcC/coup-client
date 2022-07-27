@@ -1,18 +1,18 @@
 <template>
   <div :class="{ 'player': true, 'ready': player.ready, 'active': player.active, 'dead': (player.influence.length == 0 && player.discardedInfluence.length > 0) }">
-    <div class="name">
-      {{ player.name }} <span v-if="player == self">(You)</span>
+    <div class="name" :class="{ self: (player == self) }">
+      {{ player.name }}
     </div>
 
     <div class="coins">
       Coins: {{ player.coins }}
     </div>
 
-    <div class="influence" v-for="(influence, key) in player.influence" :key="key">
+    <div class="influence" :class="influence" v-for="(influence, key) in player.influence" :key="key">
       {{ influence }}
     </div>
 
-    <div class="discarded influence" v-for="(influence, key) in player.discardedInfluence" :key="key">
+    <div class="discarded influence" :class="influence" v-for="(influence, key) in player.discardedInfluence" :key="key">
       {{ influence }}
     </div>
 
@@ -57,6 +57,16 @@ export default {
 
   background-color: lightgrey;
 
+  .name {
+    &.self {
+      font-weight: bold;
+
+      &::after {
+        content: ' (You)';
+      }
+    }
+  }
+
   .actions {
     margin: 10px;
     text-align: center;
@@ -67,10 +77,48 @@ export default {
     width: 150px;
     margin: 5px auto;
     padding: 3px;
-    border: 4px solid black;
+    border: 2px solid black;
+
+    text-transform: lowercase;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+
+    &.UNKNOWN {
+      background-color: white;
+      color: black
+    }
+
+    &.ASSASSIN {
+      background-color: black;
+      color: white;
+    }
+
+    &.AMBASSADOR {
+      background-color: orange;
+      color: black;
+    }
+
+    &.CAPTAIN {
+      background-color: navy;
+      color: white;
+    }
+
+    &.CONTESSA {
+      background-color: crimson;
+      color: black;
+    }
+
+    &.DUKE {
+      background-color: fuchsia;
+      color: black;
+    }
 
     &.discarded {
       border: 2px dashed grey;
+      background-color: lightgrey;
+      color: black;
     }
   }
 
