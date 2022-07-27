@@ -325,6 +325,19 @@ export default {
                 this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} failed the challenge.`);
             });
 
+            this.$events.on("playerMustDiscardInfluence", (e) => {
+                var count = e.count ? e.count : 1;
+                var reason = e.reason ? e.reason : 'Unknown';
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} must discard ${count} influence (Reason: ${reason}).`);
+            });
+
+            this.$events.on("playerExchangingCards", (e) => {
+                var count = e.count ? e.count : 2;
+                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.player].name)} is exchanging ${count} cards with the deck.`);
+            });
+
+
+
             this.$events.on("chatMessage", (e) => {
                 this.gameLog.unshift(`[${e.date}] &lt;${this.htmlEntities(this.players[e.player].name)}&gt; ${this.htmlEntities(e.message)}`);
             });
