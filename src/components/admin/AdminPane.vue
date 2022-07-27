@@ -20,17 +20,24 @@
                     - <button class="btn btn-sm btn-success" @click="saveGame(gameID)">Save Game</button>
                     - <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
                     - <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
+                    - <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
 
                     <br><strong>Created:</strong> {{ game.created }}
                     <br><strong>State:</strong> <span class="state">{{ game.state }}</span>
 
-                    <br><strong>Players:</strong> 
+                    <br><strong>Players:</strong>
                     <ul>
                         <li v-for="(player, playerID) in game.players" :key="playerID" class="player">
                             <router-link :to="'/game/' + gameID + '/' + playerID">{{ player.name }}</router-link>
                         </li>
                     </ul>
                     <br>
+                    <div class="gameEvents" v-if="game.events">
+                        <strong>Events:</strong>
+                        <br>
+                        <textarea v-model="game.events"></textarea>
+                        <br>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -72,6 +79,8 @@ export default {
         this.$ioSocket.on("commandError", this.handleCommandError);
         this.$ioSocket.on("error", this.handleCommandError);
         this.$ioSocket.on("success", this.handleCommandSuccess);
+        this.$ioSocket.on("gameEventsCollected", this.handleGameEventsCollected);
+
         this.refresh();
     },
 
@@ -82,6 +91,7 @@ export default {
         this.$ioSocket.off("commandError", this.handleCommandError);
         this.$ioSocket.off("error", this.handleCommandError);
         this.$ioSocket.off("success", this.handleCommandSuccess);
+        this.$ioSocket.off("gameEventsCollected", this.handleGameEventsCollected);
     },
 
     methods: {
@@ -107,6 +117,10 @@ export default {
 
         refreshGame(gameId) {
             this.$ioSocket.emit("refreshGame", gameId);
+        },
+
+        collectGameEvents(gameId) {
+            this.$ioSocket.emit("collectGameEvents", gameId);
         },
 
         saveGame(gameId) {
@@ -135,15 +149,19 @@ export default {
         },
 
         handleCommandError(event) {
-            this.alerts.push({type: 'danger', message: event.error});
+            this.alerts.push({ type: 'danger', message: event.error });
         },
 
         handleCommandSuccess(event) {
-            this.alerts.push({type: 'success', message: event.message});
+            this.alerts.push({ type: 'success', message: event.message });
         },
 
         removeAlert(alertId) {
             this.alerts.splice(alertId, 1);
+        },
+
+        handleGameEventsCollected(event) {
+            this.knownGames[event.game]['events'] = JSON.stringify(event.events, null, 2);
         },
     },
 
@@ -155,6 +173,14 @@ export default {
 .activeGames {
     span.state {
         font-family: monospace;
+    }
+}
+
+.gameEvents {
+    textarea {
+        width: 80%;
+        margin: 0 auto;
+        height: 200px;
     }
 }
 </style>
