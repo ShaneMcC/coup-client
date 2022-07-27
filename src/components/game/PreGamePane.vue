@@ -54,6 +54,7 @@ export default {
                 alert("Please enter a game ID.");
                 return;
             }
+            
             this.$ioSocket.emit("joinGame", this.gameID, this.playerName);
         },
     },

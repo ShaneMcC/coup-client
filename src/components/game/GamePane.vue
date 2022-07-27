@@ -132,11 +132,15 @@ export default {
         this.$events = new emitter();
         this.addInternalHandlers();
 
+        console.log('Created');
+
         // This is mostly for dev, our parent keeps track of events for us to reload with.
         if (this.initialEvents.length > 0) {
             for (const event of this.initialEvents) {
+                console.log('SPECIAL: ' + JSON.stringify(event));
                 this.handleEvent(event);
             }
+
             this.handleGameLoaded();
         }
 
@@ -147,6 +151,8 @@ export default {
     unmounted() {
         this.$ioSocket.off("handleGameEvent", this.handleEvent);
         this.$ioSocket.off("gameLoaded", this.handleGameLoaded);
+        delete this.$events;
+        this.$events = undefined;
     },
 
     methods: {
@@ -209,7 +215,7 @@ export default {
 
         addInternalHandlers() {
             this.$events.on("gameCreated", () => {
-                this.gameLog = [];
+                this.gameLoaded = false;
             });
 
             this.$events.on("addPlayer", (e) => {

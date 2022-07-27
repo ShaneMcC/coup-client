@@ -6,10 +6,10 @@
         </ConnectingPane>
 
         <div v-if="gameExists">
-            <PreGamePane v-if="connected && !inGame" :showSpectateButton="true" v-model:playerName="playerName" :gameID="myGameID">
+            <PreGamePane v-if="connected && (myPlayerID == undefined)" :showSpectateButton="!inGame" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
-            <GamePane v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
+            <GamePane :key="myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
             </GamePane>
         </div>
 
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import emitter from 'tiny-emitter'
 import ConnectingPane from "@/components/common/ConnectingPane.vue";
 import PreGamePane from "@/components/game/PreGamePane.vue";
 import GamePane from "@/components/game/GamePane.vue";
@@ -42,6 +43,7 @@ export default {
 
             myPlayerID: this.$route.params.playerId,
             myGameID: this.$route.params.gameId,
+            myPlayerMask: this.$route.params.playerId,
 
             gameEvents: [],
             alerts: [],
@@ -56,6 +58,9 @@ export default {
     },
 
     created() {
+        this.$events = new emitter();
+        this.addInternalHandlers();
+
         this.$ioSocket.on("connect", this.handleConnect);
         this.$ioSocket.on("connect_error", this.handleConnectError);
         this.$ioSocket.on("disconnect", this.handleDisconnect);
@@ -113,7 +118,8 @@ export default {
         handleGameJoined(arg) {
             this.myPlayerID = arg.playerID;
             this.myGameID = arg.gameID;
-
+            this.gameEvents = [];
+            
             this.inGame = true;
             if (this.myPlayerID != undefined) {
                 this.$router.push(`/game/${this.myGameID}/${this.myPlayerID}`);
@@ -145,6 +151,7 @@ export default {
 
         handleGameEvent(event) {
             this.gameEvents.push(event);
+            this.$events.emit(event.__type, event);
         },
 
         handleGameRemoved(event) {
@@ -185,6 +192,21 @@ export default {
 
             this.connectErrorMessage = '';
         },
+
+        addInternalHandlers() {
+            this.$events.on("addPlayer", (e) => {
+                if (e.self) {
+                    this.myPlayerMask = e.id;
+                }
+            });
+
+            this.$events.on("removePlayer", (e) => {
+                if (e.id == this.myPlayerMask) {
+                    this.myPlayerID = undefined;
+                    this.myPlayerMask = undefined;
+                }
+            });
+        }
     },
 
     components: { ConnectingPane, PreGamePane, GamePane, AlertsPane }
