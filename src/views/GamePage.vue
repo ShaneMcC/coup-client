@@ -73,6 +73,7 @@ export default {
         this.$ioSocket.on("commandError", this.handleCommandError);
         this.$ioSocket.on("actionError", this.handleCommandError);
         this.$ioSocket.on("error", this.handleCommandError);
+        this.$ioSocket.on("rejoinFailed", this.handleRejoinFailed);
     },
 
     mounted() {
@@ -94,6 +95,7 @@ export default {
         this.$ioSocket.off("commandError", this.handleCommandError);
         this.$ioSocket.off("actionError", this.handleCommandError);
         this.$ioSocket.off("error", this.handleCommandError);
+        this.$ioSocket.off("rejoinFailed", this.handleRejoinFailed);
     },
 
     methods: {
@@ -140,6 +142,10 @@ export default {
                     this.$ioSocket.emit("spectateGame", this.myGameID);
                 }
             }
+        },
+
+        handleRejoinFailed() {
+            this.$ioSocket.emit("spectateGame", this.myGameID);
         },
 
         handleGameDoesNotExist(event) {
