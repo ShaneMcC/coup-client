@@ -9,10 +9,10 @@
         </ConnectingPane>
 
         <div v-if="gameExists">
-            <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" v-model:playerID="myPlayerID" :gameID="myGameID">
+            <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
-            <GamePane v-if="connected && inGame" :myPlayerID="myPlayerID" :myGameID="myGameID" :initialEvents="gameEvents">
+            <GamePane v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
             </GamePane>
         </div>
 
@@ -64,6 +64,7 @@ export default {
         this.$ioSocket.on("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.on("refreshGame", this.handleRefreshGame);
         this.$ioSocket.on("commandError", this.handleCommandError);
+        this.$ioSocket.on("actionError", this.handleCommandError);
         this.$ioSocket.on("error", this.handleCommandError);
     },
 
@@ -84,6 +85,7 @@ export default {
         this.$ioSocket.off("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.off("refreshGame", this.handleRefreshGame);
         this.$ioSocket.off("commandError", this.handleCommandError);
+        this.$ioSocket.off("actionError", this.handleCommandError);
         this.$ioSocket.off("error", this.handleCommandError);
     },
 

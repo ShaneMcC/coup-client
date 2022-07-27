@@ -49,7 +49,7 @@ import ActionPanel from './ActionPanel.vue';
 export default {
     inject: ["$ioSocket", "$appConfig"],
 
-    props: ["myGameID", "myPlayerID", "initialEvents"],
+    props: ["myGameID", "initialEvents"],
 
     data() {
         return {
@@ -57,6 +57,7 @@ export default {
             gameEvents: [],
             availableActions: {},
             players: {},
+            myPlayerID: '',
 
             activePlayer: '',
         };
@@ -135,6 +136,8 @@ export default {
                     "ready": false,
                     "actions": { 'KICK': { name: 'Kick' } }
                 };
+
+                if (e.self) { this.myPlayerID = e.id; }
             });
 
             this.$events.on("removePlayer", (e) => {

@@ -14,7 +14,7 @@
 
 export default {
     inject: ["$ioSocket"],
-    props: ['playerName', 'playerID', 'gameID'],
+    props: ['playerName', 'gameID'],
 
     methods: {
         spectateGame() {
