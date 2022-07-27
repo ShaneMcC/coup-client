@@ -6,14 +6,14 @@ import IndexPage from "@/views/IndexPage.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 
 const routes = [
-    { path: "/", component: IndexPage },
-    { path: "/game/:gameId([^/]+)", component: GamePage },
-    { path: "/game/:gameId([^/]+)/:playerId([^/]+)", component: GamePage },
-    { path: "/admin", component: AdminPage },
+    { name: 'Home', path: "/", component: IndexPage },
+    { name: 'Game', path: "/game/:gameId([^/]+)", component: GamePage },
+    { name: 'Play', path: "/game/:gameId([^/]+)/:playerId([^/]+)", component: GamePage },
+    { name: 'Admin', path: "/admin", component: AdminPage },
 
 
     // Fallback 404 page
-    { path: "/:notFound(.*)", component: PageNotFound },
+    { name: '404', path: "/:notFound(.*)", component: PageNotFound },
 ];
 
 const router = createRouter({
