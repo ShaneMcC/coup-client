@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="connect">Connect</button>
+    <button class="btn btn-sm btn-success" @click="connect">Connect</button>
     <hr>
     Connecting to {{ $appConfig.siteName }} server...
 

@@ -7,12 +7,19 @@
 
         <div v-if="connected">
             <div v-if="gameCreationEnabled">
-                <button @click="createGame">Create new Game</button>
+                <button class="btn btn-sm btn-success" @click="createGame">Create new Game</button>
                 <hr>
             </div>
 
-            Game ID: <input type="text" v-model="joinGameId">
-            <button @click="joinGame">Join Existing Game</button>
+            <form class="form" @submit.prevent="joinGame">
+                <div class="d-flex flex-row align-items-center flex-wrap">
+                    <label for="joinGameID">Game ID:</label>
+                    <input id="joinGameID" class="form-control w-auto mx-2" v-model="joinGameId">
+
+                    <button class="btn btn-sm btn-primary" type="submit">Join Existing Game</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </template>
@@ -82,7 +89,7 @@ export default {
         },
 
         handleCommandError(event) {
-            this.alerts.push({type: 'danger', message: event.error});
+            this.alerts.push({ type: 'danger', message: event.error });
         },
 
         removeAlert(alertId) {

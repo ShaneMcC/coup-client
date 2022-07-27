@@ -19,7 +19,7 @@
         <div v-if="!gameExists && gameStateKnown">
             <strong>Error:</strong> Game does not exist
 
-            <button v-if="connected" @click="checkExists">Retry</button>
+            <button v-if="connected" class="btn btn-sm btn-success" @click="checkExists">Retry</button>
         </div>
     </div>
 </template>

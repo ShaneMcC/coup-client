@@ -1,74 +1,83 @@
 <template>
     <div>
-        <form @submit.prevent="createGame">
-            Game ID: <input v-model="newGameID">
-            <button type="submit">Create new Game</button>
+        <form class="form" @submit.prevent="createGame">
+            <div class="d-flex flex-row align-items-center flex-wrap">
+                <label for="newGameID">Game ID:</label>
+                <input id="newGameID" class="form-control w-auto mx-2" v-model="newGameID">
+
+                <button class="btn btn-sm btn-primary" type="submit">Create new Game</button>
+            </div>
         </form>
         <br><br>
 
-        <button @click="refresh">Refresh</button>
-        <br><br>
+        <div class="actions">
+            <button v-if="!serverConfig.publicGames" @click="allowPublicGames" class="btn btn-success">Allow Public Games</button>
+            <button v-if="serverConfig.publicGames" @click="disallowPublicGames" class="btn btn-danger">Disallow Public Games</button>
+        </div>
 
-        <button v-if="!serverConfig.publicGames" @click="allowPublicGames">Allow Public Games</button>
-        <button v-if="serverConfig.publicGames" @click="disallowPublicGames">Disallow Public Games</button>
-        <br><br>
+        <div class="actions">
+            <button @click="saveAllGames" class="btn btn-success">Save All Games</button>
+            <button @click="loadAllGames" class="btn btn-primary">Load All Games</button>
+            <button @click="killAllGames" class="btn btn-danger">Kill All Games</button>
+            <button @click="refreshAllGames" class="btn btn-primary">Refresh All Games</button>
+        </div>
 
-        <button @click="saveAllGames">Save All Games</button>
-        <br>
-        <button @click="loadAllGames">Load All Games</button>
-        <br>
-        <button @click="killAllGames">Kill All Games</button>
-        <br>
-        <button @click="refreshAllGames">Refresh All Games</button>
-        <br><br>
-
-        <button @click="killServer">Kill Server</button>
+        <div class="actions">
+            <button @click="killServer" class="btn btn-danger">Kill Server</button>
+        </div>
         <br><br>
 
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
-
         <hr>
-        <div class="activeGames">
-            <strong>Active Games</strong>
-            <ul>
-                <li v-for="(game, gameID) in knownGames" :key="gameID" class="game">
+
+        <h1>Active Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
+        <div class="gameList activeGames">
+            <div v-for="(game, gameID) in knownGames" :key="gameID" class="game">
+                <h2>
                     <router-link :to="'/game/' + gameID">{{ gameID }}</router-link>
-                    - <button class="btn btn-sm btn-warning" @click="endGame(gameID)">End Game</button>
-                    - <button class="btn btn-sm btn-success" @click="saveGame(gameID)">Save Game</button>
-                    - <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
-                    - <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
-                    - <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
-                    - <button class="btn btn-sm btn-secondary" @click="adminEmitEvent(gameID)">Emit Event</button>
+                </h2>
+                <div class="actions">
+                    <button class="btn btn-sm btn-warning" @click="endGame(gameID)">End Game</button>
+                    <button class="btn btn-sm btn-success" @click="saveGame(gameID)">Save Game</button>
+                    <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
+                    <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
+                    <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
+                    <button class="btn btn-sm btn-secondary" @click="adminEmitEvent(gameID)">Emit Event</button>
+                </div>
 
-                    <br><strong>Created:</strong> {{ game.created }}
-                    <br><strong>State:</strong> <span class="state">{{ game.state }}</span>
+                <div class="meta">
+                    <strong>Created:</strong> {{ game.created }}
+                    <br>
+                    <strong>State:</strong> <span class="state">{{ game.state }}</span>
+                </div>
 
-                    <br><strong>Players:</strong>
+                <div class="players">
+                    <h3>Players:</h3>
                     <ul>
                         <li v-for="(player, playerID) in game.players" :key="playerID" class="player">
                             <router-link :to="'/game/' + gameID + '/' + playerID">{{ player.name }}</router-link>
                         </li>
                     </ul>
+                </div>
+
+                <div class="gameEvents" v-if="game.events">
+                    <strong>Events:</strong>
                     <br>
-                    <div class="gameEvents" v-if="game.events">
-                        <strong>Events:</strong>
-                        <br>
-                        <textarea v-model="game.events"></textarea>
-                        <br>
-                    </div>
-                </li>
-            </ul>
+                    <textarea v-model="game.events"></textarea>
+                    <br>
+                </div>
+            </div>
         </div>
-        <hr>
-        <div class="savedGames">
-            <strong>Saved Games</strong>
-            <ul>
-                <li v-for="(game, gameID) in savedGames" :key="gameID" class="game">
-                    {{ gameID }}
-                    - <button class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
-                    - <button class="btn btn-sm btn-danger" @click="removeSavedGame(gameID)">Delete</button>
-                </li>
-            </ul>
+
+        <h1>Saved Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
+        <div class="gameList savedGames">
+            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game">
+                <h2>{{ gameID }}</h2>
+                <div class="actions">
+                    <button class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
+                    <button class="btn btn-sm btn-danger" @click="removeSavedGame(gameID)">Delete</button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -179,7 +188,7 @@ export default {
                 if (eventData.__type) {
                     this.$ioSocket.emit("adminEmitEvent", gameId, eventData);
                 } else {
-                    this.alerts.push({ type: 'danger', message: 'Event data must include a __type field.' });    
+                    this.alerts.push({ type: 'danger', message: 'Event data must include a __type field.' });
                 }
             } else {
                 this.alerts.push({ type: 'danger', message: 'Event data failed to parse, not emited.' });
@@ -233,6 +242,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.gameList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game {
+    padding: 10px;
+    border: 1px solid grey;
+    margin: 10px;
+    display: inline-block;
+}
+
+.actions .btn {
+    margin: 5px;
+}
+
 .activeGames {
     span.state {
         font-family: monospace;
@@ -241,7 +266,8 @@ export default {
 
 .gameEvents {
     textarea {
-        width: 80%;
+        font-family: monospace;
+        width: 100%;
         margin: 0 auto;
         height: 200px;
     }

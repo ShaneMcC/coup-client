@@ -1,7 +1,7 @@
 <template>
     <div>
-        <button @click="disconnect">Disconnect</button>
-        <!-- <button @click="leave">Leave</button> -->
+        <button class="btn btn-sm btn-danger" @click="disconnect">Disconnect</button>
+        <!-- <button class="btn btn-sm btn-danger" @click="leave">Leave</button> -->
         <hr>
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">

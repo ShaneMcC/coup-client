@@ -1,12 +1,15 @@
 <template>
     <div>
-        <form @submit.prevent="joinGame">
-            Player Name: <input type="text" :value="playerName" @input="this.$emit('update:playerName', $event.target.value);">
-            <button type="submit">Join Game</button>
+        <form class="form" @submit.prevent="joinGame">
+            <div class="d-flex flex-row align-items-center flex-wrap">
+                <label for="playerName">Player Name:</label>
+                <input id="playerName" class="form-control w-auto mx-2" type="text" :value="playerName" @input="this.$emit('update:playerName', $event.target.value);">
+                <button class="btn btn-sm btn-primary" type="submit">Join Game</button>
+            </div>
         </form>
         <br>
         <br>
-        <button @click="spectateGame">Spectate Game</button>
+        <button class="btn btn-sm btn-info" @click="spectateGame">Spectate Game</button>
     </div>
 </template>
 
@@ -24,7 +27,7 @@ export default {
             }
             this.$ioSocket.emit("spectateGame", this.gameID);
         },
-        
+
         joinGame() {
             if (this.playerName.length == 0) {
                 alert("Please choose a player name.");

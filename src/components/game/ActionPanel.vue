@@ -1,6 +1,6 @@
 <template>
     <span>
-        <button :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
+        <button class="btn btn-dark" :class="action.classes" :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
     </span>
 </template>
 

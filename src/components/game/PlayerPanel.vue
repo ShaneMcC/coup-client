@@ -18,7 +18,7 @@
 
     <div class="actions" v-if="self != undefined">
       <span v-for="(action, actionID) in player.actions" :key="actionID">
-        <br><button @click="doPlayerAction(actionID)">{{ action.name }}</button>
+        <button class="btn btm-sm btn-primary" @click="doPlayerAction(actionID)">{{ action.name }}</button>
       </span>
     </div>
   </div>
@@ -56,6 +56,11 @@ export default {
   padding: 5px;
 
   background-color: lightgrey;
+
+  .actions {
+    margin: 10px;
+    text-align: center;
+  }
 
   .influence {
     text-align: center;
