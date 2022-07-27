@@ -5,7 +5,7 @@
         <hr>
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">
-                We are {{ myPlayerID }} in {{ myGameID }}
+                We are <strong>{{ myPlayerID }}</strong> in {{ myGameID }}
             </div>
             <div v-else>
                 We are spectating {{ myGameID }}
@@ -64,26 +64,30 @@ export default {
 
     created() {
         this.$events = new emitter();
-        this.addHandlers();
+        this.addInternalHandlers();
 
         // This is mostly for dev, our parent keeps track of events for us to reload with.
         if (this.initialEvents.length > 0) {
             for (const event of this.initialEvents) {
                 this.handleEvent(event);
             }
-            this.gameLoaded = true;
+            this.handleGameLoaded();
         }
 
-        this.$ioSocket.on("handleGameEvent", (event) => {
-            this.handleEvent(event);
-        });
+        this.$ioSocket.on("handleGameEvent", this.handleEvent);
+        this.$ioSocket.on("gameLoaded", this.handleGameLoaded);
+    },
 
-        this.$ioSocket.on("gameLoaded", () => {
-            this.gameLoaded = true;
-        });
+    unmounted() {
+        this.$ioSocket.off("handleGameEvent", this.handleEvent);
+        this.$ioSocket.off("gameLoaded", this.handleGameLoaded);
     },
 
     methods: {
+        handleGameLoaded() {
+            this.gameLoaded = true;
+        },
+
         handleEvent(event) {
             this.gameEvents.unshift(event);
             this.$events.emit(event.__type, event);
@@ -120,7 +124,7 @@ export default {
             return `[${date}] ${type} - ${JSON.stringify(event)}`;
         },
 
-        addHandlers() {
+        addInternalHandlers() {
             this.$events.on("addPlayer", (e) => {
                 this.players[e.id] = {
                     "id": e.id,
@@ -147,6 +151,9 @@ export default {
 
             this.$events.on("setPlayerName", (e) => {
                 this.players[e.player]["name"] = e.name;
+                if (e.player == this.myPlayerID) {
+                    this.playerName = e.name;
+                }
             });
 
             this.$events.on("gameOver", (e) => {

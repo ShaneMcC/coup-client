@@ -2,22 +2,34 @@
     <div>
         Game: {{ myGameID }}
         <hr>
-        
-        <ConnectingPane v-if="!connected">
+
+        <div v-for="(error, id) in errors" :key="id" class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+
+        <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
         </ConnectingPane>
 
-        <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" v-model:playerID="myPlayerID" :gameID="myGameID">
-        </PreGamePane>
+        <div v-if="gameExists">
+            <PreGamePane v-if="connected && !inGame" v-model:playerName="playerName" v-model:playerID="myPlayerID" :gameID="myGameID">
+            </PreGamePane>
 
-        <GamePane v-if="connected && inGame" :myPlayerID="myPlayerID" :myGameID="myGameID" :initialEvents="gameEvents">
-        </GamePane>
+            <GamePane v-if="connected && inGame" :myPlayerID="myPlayerID" :myGameID="myGameID" :initialEvents="gameEvents">
+            </GamePane>
+        </div>
+
+        <div v-if="!gameExists && gameStateKnown">
+            <strong>Error:</strong> Game does not exist
+
+            <button v-if="connected" @click="checkExists">Retry</button>
+        </div>
     </div>
 </template>
 
 <script>
-import ConnectingPane from "@/components/ConnectingPane.vue";
-import PreGamePane from "@/components/PreGamePane.vue";
-import GamePane from "@/components/GamePane.vue";
+import ConnectingPane from "@/components/common/ConnectingPane.vue";
+import PreGamePane from "@/components/game/PreGamePane.vue";
+import GamePane from "@/components/game/GamePane.vue";
 
 import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
 
@@ -27,63 +39,141 @@ export default {
     data() {
         return {
             playerName: '',
+            connectErrorMessage: '',
 
             connected: false,
             inGame: false,
+            gameExists: false,
+            gameStateKnown: false,
 
             myPlayerID: this.$route.params.playerId,
             myGameID: this.$route.params.gameId,
 
             gameEvents: [],
+            errors: [],
         };
     },
     created() {
-        this.$ioSocket.on("connect", () => {
+        this.$ioSocket.on("connect", this.handleConnect);
+        this.$ioSocket.on("connect_error", this.handleConnectError);
+        this.$ioSocket.on("disconnect", this.handleDisconnect);
+        this.$ioSocket.on("gameJoined", this.handleGameJoined);
+        this.$ioSocket.on("handleGameEvent", this.handleGameEvent);
+        this.$ioSocket.on("gameExists", this.handleGameExists);
+        this.$ioSocket.on("gameDoesNotExist", this.handleGameDoesNotExist);
+        this.$ioSocket.on("gameRemoved", this.handleGameRemoved);
+        this.$ioSocket.on("refreshGame", this.handleRefreshGame);
+        this.$ioSocket.on("commandError", this.handleCommandError);
+    },
+
+    mounted() {
+        this.$ioSocket.connect();
+        this.$ioSocket.emit('checkGame', this.myGameID);
+    },
+
+    unmounted() {
+        this.$ioSocket.disconnect();
+
+        this.$ioSocket.off("connect", this.handleConnect);
+        this.$ioSocket.off("connect_error", this.handleConnectError);
+        this.$ioSocket.off("disconnect", this.handleDisconnect);
+        this.$ioSocket.off("gameJoined", this.handleGameJoined);
+        this.$ioSocket.off("handleGameEvent", this.handleGameEvent);
+        this.$ioSocket.off("gameExists", this.handleGameExists);
+        this.$ioSocket.off("gameDoesNotExist", this.handleGameDoesNotExist);
+        this.$ioSocket.off("gameRemoved", this.handleGameRemoved);
+        this.$ioSocket.off("refreshGame", this.handleRefreshGame);
+        this.$ioSocket.off("commandError", this.handleCommandError);
+    },
+
+    methods: {
+        handleConnect() {
             this.reset();
             this.connected = true;
+            this.checkExists();
+        },
 
-            if (this.myPlayerID) {
-                this.$ioSocket.emit("rejoinGame", this.myGameID, this.myPlayerID);
-            }
-        });
+        checkExists() {
+            this.$ioSocket.emit('checkGame', this.myGameID);
+        },
 
-        this.$ioSocket.on("disconnect", () => {
+        handleConnectError(err) {
+            this.connectErrorMessage = err.message;
+        },
+
+        handleDisconnect() {
             this.reset();
-        });
+        },
 
-        this.$ioSocket.on("gameJoined", (arg) => {
+        handleGameJoined(arg) {
             this.myPlayerID = arg.playerID;
             this.myGameID = arg.gameID;
 
             this.inGame = true;
             if (this.myPlayerID != undefined) {
                 this.$router.push(`/game/${this.myGameID}/${this.myPlayerID}`);
+            } else {
+                this.$router.push(`/game/${this.myGameID}`);
             }
-        });
+        },
 
-        this.$ioSocket.on("handleGameEvent", (event) => {
+        handleGameExists(event) {
+            if (event.game == this.myGameID) {
+                this.gameExists = true;
+                this.gameStateKnown = true;
+
+                if (this.myPlayerID) {
+                    this.$ioSocket.emit("rejoinGame", this.myGameID, this.myPlayerID);
+                } else if (!event.joinable) {
+                    this.$ioSocket.emit("spectateGame", this.myGameID);
+                }
+            }
+        },
+
+        handleGameDoesNotExist(event) {
+            if (event.game == this.myGameID) {
+                this.gameExists = false;
+                this.gameStateKnown = true;
+            }
+        },
+
+        handleGameEvent(event) {
             this.gameEvents.push(event);
-        });
-    },
+        },
 
-    mounted() {
-        this.$ioSocket.connect();
-    },
+        handleGameRemoved(event) {
+            if (event.game == this.myGameID) {
+                this.reset();
+                this.connected = true;
+                this.gameStateKnown = true;
+            }
+        },
 
-    unmounted() {
-        this.$ioSocket.disconnect();
-    },
+        handleRefreshGame(event) {
+            if (event.game == this.myGameID) {
+                this.reset();
+                this.connected = true;
+                this.checkExists();
+            }
+        },
 
-    methods: {
+        handleCommandError(event) {
+            this.errors.push(event.error);
+        },
+
         reset() {
             this.connected = false;
             this.inGame = false;
             this.gameStarted = false;
             this.gameEvents = [];
+            this.gameExists = false;
+            this.gameStateKnown = false;
 
             this.playerName = uniqueNamesGenerator({ dictionaries: [[...adjectiveList, ...colourList], animalList], length: 2, separator: '', style: 'capital' });
             this.myPlayerID = this.$route.params.playerId;
             this.myGameID = this.$route.params.gameId;
+
+            this.connectErrorMessage = '';
         },
     },
 

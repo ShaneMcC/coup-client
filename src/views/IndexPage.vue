@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ConnectingPane v-if="!connected">
+        <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
         </ConnectingPane>
 
         <div v-if="connected">
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import ConnectingPane from "@/components/ConnectingPane.vue";
+import ConnectingPane from "@/components/common/ConnectingPane.vue";
 
 export default {
     inject: ["$ioSocket"],
@@ -22,22 +22,15 @@ export default {
     data() {
         return {
             joinGameId: '',
+            connectErrorMessage: '',
             connected: false
         };
     },
     created() {
-        this.$ioSocket.on("connect", () => {
-            this.reset();
-            this.connected = true;
-        });
-
-        this.$ioSocket.on("disconnect", () => {
-            this.reset();
-        });
-
-        this.$ioSocket.on("gameCreated", (arg) => {
-            this.$router.push(`/game/${arg.game}`);
-        });
+        this.$ioSocket.on("connect", this.handleConnect);
+        this.$ioSocket.on("connect_error", this.handleConnectError);
+        this.$ioSocket.on("disconnect", this.handleDisconnect);
+        this.$ioSocket.on("gameCreated", this.handleGameCreated);
     },
 
     mounted() {
@@ -46,11 +39,34 @@ export default {
 
     unmounted() {
         this.$ioSocket.disconnect();
+
+        this.$ioSocket.off("connect", this.handleConnect);
+        this.$ioSocket.off("connect_error", this.handleConnectError);
+        this.$ioSocket.off("disconnect", this.handleDisconnect);
+        this.$ioSocket.off("gameCreated", this.handleGameCreated);
     },
 
     methods: {
+        handleConnect() {
+            this.reset();
+            this.connected = true;
+        },
+
+        handleConnectError(err) {
+            this.connectErrorMessage = err.message;
+        },
+
+        handleDisconnect() {
+            this.reset();
+        },
+
+        handleGameCreated(arg) {
+            this.$router.push(`/game/${arg.game}`);
+        },
+
         reset() {
             this.connected = false;
+            this.connectErrorMessage = '';
         },
 
         createGame() {
