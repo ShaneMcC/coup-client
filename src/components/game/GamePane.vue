@@ -193,7 +193,19 @@ export default {
             });
 
             this.$events.on("removePlayer", (e) => {
-                this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} left the game`);
+                if (e.kickedBy) {
+                    if (e.reason) {
+                        this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} was kicked from the game by ${this.htmlEntities(this.players[e.kickedBy].name)} (${this.htmlEntities(e.reason)})`);
+                    } else {
+                        this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} was kicked from the game by ${this.htmlEntities(this.players[e.kickedBy].name)}`);
+                    }
+                } else {
+                    if (e.reason) {
+                        this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} left the game (${this.htmlEntities(e.reason)})`);
+                    } else {
+                        this.gameLog.unshift(`[${e.date}] ${this.htmlEntities(this.players[e.id].name)} left the game`);
+                    }
+                }
                 delete this.players[e.id];
             });
 
