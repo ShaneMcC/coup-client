@@ -11,18 +11,21 @@
             <ul>
                 <li v-for="(game, gameID) in knownGames" :key="gameID" class="game">
                     <router-link :to="'/game/' + gameID">{{ gameID }}</router-link>
-                    - <span class="state">{{ game.state }}</span>
                     - <button class="btn btn-sm btn-warning" @click="endGame(gameID)">End Game</button>
                     - <button class="btn btn-sm btn-success" @click="saveGame(gameID)">Save Game</button>
                     - <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
                     - <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
 
+                    <br><strong>Created:</strong> {{ game.created }}
+                    <br><strong>State:</strong> <span class="state">{{ game.state }}</span>
+
+                    <br><strong>Players:</strong> 
                     <ul>
                         <li v-for="(player, playerID) in game.players" :key="playerID" class="player">
                             <router-link :to="'/game/' + gameID + '/' + playerID">{{ player.name }}</router-link>
                         </li>
                     </ul>
-
+                    <br>
                 </li>
             </ul>
         </div>
