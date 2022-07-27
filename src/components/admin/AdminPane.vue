@@ -1,11 +1,28 @@
 <template>
     <div>
-        <button @click="createGame">Create new Game</button>
+        <form @submit.prevent="createGame">
+            Game ID: <input v-model="newGameID">
+            <button type="submit">Create new Game</button>
+        </form>
         <br><br>
+
         <button @click="refresh">Refresh</button>
         <br><br>
+
         <button v-if="!serverConfig.publicGames" @click="allowPublicGames">Allow Public Games</button>
         <button v-if="serverConfig.publicGames" @click="disallowPublicGames">Disallow Public Games</button>
+        <br><br>
+
+        <button @click="saveAllGames">Save All Games</button>
+        <br>
+        <button @click="loadAllGames">Load All Games</button>
+        <br>
+        <button @click="killAllGames">Kill All Games</button>
+        <br>
+        <button @click="refreshAllGames">Refresh All Games</button>
+        <br><br>
+
+        <button @click="killServer">Kill Server</button>
         <br><br>
 
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
@@ -21,6 +38,7 @@
                     - <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
                     - <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
                     - <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
+                    - <button class="btn btn-sm btn-secondary" @click="adminEmitEvent(gameID)">Emit Event</button>
 
                     <br><strong>Created:</strong> {{ game.created }}
                     <br><strong>State:</strong> <span class="state">{{ game.state }}</span>
@@ -47,7 +65,8 @@
             <ul>
                 <li v-for="(game, gameID) in savedGames" :key="gameID" class="game">
                     {{ gameID }}
-                    <button class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
+                    - <button class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
+                    - <button class="btn btn-sm btn-danger" @click="removeSavedGame(gameID)">Delete</button>
                 </li>
             </ul>
         </div>
@@ -67,6 +86,7 @@ export default {
             savedGames: {},
             alerts: [],
             serverConfig: {},
+            newGameID: '',
         }
     },
 
@@ -96,7 +116,7 @@ export default {
 
     methods: {
         createGame() {
-            this.$ioSocket.emit("createGame");
+            this.$ioSocket.emit("createGame", this.newGameID);
         },
 
         allowPublicGames() {
@@ -127,8 +147,51 @@ export default {
             this.$ioSocket.emit("saveGame", gameId);
         },
 
+        saveAllGames() {
+            this.$ioSocket.emit("saveAllGames");
+        },
+
+        loadAllGames() {
+            this.$ioSocket.emit("loadAllGames");
+        },
+
+        killAllGames() {
+            this.$ioSocket.emit("killAllGames");
+        },
+
+        refreshAllGames() {
+            this.$ioSocket.emit("refreshAllGames");
+        },
+
+        killServer() {
+            this.$ioSocket.emit("killServer");
+        },
+
+        adminEmitEvent(gameId, eventData) {
+            if (eventData == undefined) { eventData = prompt('Event Data:'); }
+            try {
+                eventData = JSON.parse(eventData);
+            } catch (e) {
+                eventData = false;
+            }
+
+            if (eventData) {
+                if (eventData.__type) {
+                    this.$ioSocket.emit("adminEmitEvent", gameId, eventData);
+                } else {
+                    this.alerts.push({ type: 'danger', message: 'Event data must include a __type field.' });    
+                }
+            } else {
+                this.alerts.push({ type: 'danger', message: 'Event data failed to parse, not emited.' });
+            }
+        },
+
         loadGame(gameId) {
             this.$ioSocket.emit("loadGame", gameId);
+        },
+
+        removeSavedGame(gameId) {
+            this.$ioSocket.emit("removeSavedGame", gameId);
         },
 
         refresh() {
