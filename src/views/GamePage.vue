@@ -136,7 +136,7 @@ export default {
 
                 if (this.myPlayerID) {
                     this.$ioSocket.emit("rejoinGame", this.myGameID, this.myPlayerID);
-                } else if (!event.joinable) {
+                } else /* if (!event.joinable) */ {
                     this.$ioSocket.emit("spectateGame", this.myGameID);
                 }
             }
