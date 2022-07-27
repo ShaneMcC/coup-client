@@ -3,9 +3,7 @@
         Game: {{ myGameID }}
         <hr>
 
-        <div v-for="(error, id) in errors" :key="id" class="alert alert-danger" role="alert">
-            {{ error }}
-        </div>
+        <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
 
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
         </ConnectingPane>
@@ -30,6 +28,7 @@
 import ConnectingPane from "@/components/common/ConnectingPane.vue";
 import PreGamePane from "@/components/game/PreGamePane.vue";
 import GamePane from "@/components/game/GamePane.vue";
+import AlertsPane from "@/components/common/AlertsPane.vue";
 
 import { uniqueNamesGenerator, adjectives as adjectiveList, colors as colourList, animals as animalList } from 'unique-names-generator';
 
@@ -50,7 +49,7 @@ export default {
             myGameID: this.$route.params.gameId,
 
             gameEvents: [],
-            errors: [],
+            alerts: [],
         };
     },
     created() {
@@ -64,6 +63,7 @@ export default {
         this.$ioSocket.on("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.on("refreshGame", this.handleRefreshGame);
         this.$ioSocket.on("commandError", this.handleCommandError);
+        this.$ioSocket.on("error", this.handleCommandError);
     },
 
     mounted() {
@@ -84,6 +84,7 @@ export default {
         this.$ioSocket.off("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.off("refreshGame", this.handleRefreshGame);
         this.$ioSocket.off("commandError", this.handleCommandError);
+        this.$ioSocket.off("error", this.handleCommandError);
     },
 
     methods: {
@@ -158,7 +159,11 @@ export default {
         },
 
         handleCommandError(event) {
-            this.errors.push(event.error);
+            this.alerts.push({type: 'danger', message: event.error});
+        },
+
+        removeAlert(alertId) {
+            this.alerts.splice(alertId, 1);
         },
 
         reset() {
@@ -177,7 +182,7 @@ export default {
         },
     },
 
-    components: { ConnectingPane, PreGamePane, GamePane }
+    components: { ConnectingPane, PreGamePane, GamePane, AlertsPane }
 }
 </script>
 

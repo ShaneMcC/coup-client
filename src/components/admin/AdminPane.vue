@@ -5,6 +5,8 @@
         <button @click="refresh">Refresh</button>
         <br>
 
+        <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
+
         <hr>
         <div class="activeGames">
             <strong>Active Games</strong>
@@ -44,6 +46,7 @@
 </template>
 
 <script>
+import AlertsPane from "@/components/common/AlertsPane.vue";
 
 export default {
     props: ['adminSocket'],
@@ -52,6 +55,7 @@ export default {
         return {
             knownGames: {},
             savedGames: {},
+            alerts: [],
         }
     },
 
@@ -60,12 +64,18 @@ export default {
 
         this.$ioSocket.on("gamesAvailable", this.handleGamesAvailable);
         this.$ioSocket.on("savedGamesAvailable", this.handleSavedGames);
+        this.$ioSocket.on("commandError", this.handleCommandError);
+        this.$ioSocket.on("error", this.handleCommandError);
+        this.$ioSocket.on("success", this.handleCommandSuccess);
         this.refresh();
     },
 
     unmounted() {
         this.$ioSocket.off("gamesAvailable", this.handleGamesAvailable);
         this.$ioSocket.off("savedGamesAvailable", this.handleSavedGames);
+        this.$ioSocket.off("commandError", this.handleCommandError);
+        this.$ioSocket.off("error", this.handleCommandError);
+        this.$ioSocket.off("success", this.handleCommandSuccess);
     },
 
     methods: {
@@ -103,8 +113,22 @@ export default {
 
         handleSavedGames(games) {
             this.savedGames = games;
-        }
-    }
+        },
+
+        handleCommandError(event) {
+            this.alerts.push({type: 'danger', message: event.error});
+        },
+
+        handleCommandSuccess(event) {
+            this.alerts.push({type: 'success', message: event.message});
+        },
+
+        removeAlert(alertId) {
+            this.alerts.splice(alertId, 1);
+        },
+    },
+
+    components: { AlertsPane }
 }
 </script>
 
