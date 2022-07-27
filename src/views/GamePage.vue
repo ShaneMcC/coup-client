@@ -1,8 +1,5 @@
 <template>
     <div>
-        Game: {{ myGameID }}
-        <hr>
-
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
 
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
