@@ -25,20 +25,27 @@
         </form>
         <br><br>
 
-        <div class="actions">
-            <button v-if="!serverConfig.publicGames" @click="allowPublicGames" class="btn btn-success">Allow Public Games</button>
-            <button v-if="serverConfig.publicGames" @click="disallowPublicGames" class="btn btn-danger">Disallow Public Games</button>
-        </div>
+        <div class="serverThings">
+            <div>
+                <div class="actions">
+                    <button v-if="!serverConfig.publicGames" @click="allowPublicGames" class="btn btn-success">Allow Public Games</button>
+                    <button v-if="serverConfig.publicGames" @click="disallowPublicGames" class="btn btn-danger">Disallow Public Games</button>
+                </div>
 
-        <div class="actions">
-            <button @click="saveAllGames" class="btn btn-success">Save All Games</button>
-            <button @click="loadAllGames" class="btn btn-primary">Load All Games</button>
-            <button @click="killAllGames" class="btn btn-danger">Kill All Games</button>
-            <button @click="refreshAllGames" class="btn btn-primary">Refresh All Games</button>
-        </div>
+                <div class="actions">
+                    <button @click="saveAllGames" class="btn btn-success">Save All Games</button>
+                    <button @click="loadAllGames" class="btn btn-primary">Load All Games</button>
+                    <button @click="killAllGames" class="btn btn-danger">Kill All Games</button>
+                    <button @click="refreshAllGames" class="btn btn-primary">Refresh All Games</button>
+                </div>
 
-        <div class="actions">
-            <button @click="killServer" class="btn btn-danger">Kill Server</button>
+                <div class="actions">
+                    <button @click="killServer" class="btn btn-danger">Kill Server</button>
+                </div>
+            </div>
+            <div>
+                <pre>{{ prettyPrint(serverConfig) }}</pre>
+            </div>
         </div>
         <br><br>
 
@@ -142,6 +149,10 @@ export default {
     },
 
     methods: {
+        prettyPrint(value) {
+            return JSON.stringify(value, null, 2);
+        },
+
         createGame() {
             this.$ioSocket.emit("createGame", this.newGameID);
         },
@@ -217,7 +228,6 @@ export default {
             }
         },
 
-
         sendAdminMessage(gameId, message) {
             if (message == undefined || message.length == 0) { message = prompt('Message:'); }
             if (message != undefined && message.length > 0) {
@@ -247,6 +257,7 @@ export default {
         },
 
         handleServerConfig(serverConfig) {
+            delete serverConfig.adminAuthToken;
             this.serverConfig = serverConfig;
         },
 
@@ -272,6 +283,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.serverThings {
+    display: flex;
+    flex-wrap: wrap;
+
+    div {
+        flex-basis: 50%;
+    }
+}
+
 .gameList {
     display: flex;
     flex-wrap: wrap;
