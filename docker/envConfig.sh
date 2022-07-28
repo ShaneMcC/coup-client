@@ -3,6 +3,10 @@
 CONFIGSOURCE="/usr/share/nginx/html/config.json"
 CONFIGTEMP="${CONFIGSOURCE}.temp"
 
+if [ ! -e "${CONFIGSOURCE}" ]; then
+    echo "{}" > "${CONFIGSOURCE}"
+fi;
+
 if [ "${SITENAME}" != "" ]; then
     echo "Setting siteName: ${SITENAME}"
     cat "${CONFIGSOURCE}" | jq '.siteName |= "'"${SITENAME}"'"' > "${CONFIGTEMP}"

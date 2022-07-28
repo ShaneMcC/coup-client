@@ -9,7 +9,7 @@ COPY src /app/src
 COPY public /app/public
 RUN npm run build
 
-COPY .git /app/.git
+COPY . /gitRepo
 ADD docker/jq /bin/jq
 ADD docker/addGitVersion.sh /tmp/addGitVersion.sh
 RUN /tmp/addGitVersion.sh
