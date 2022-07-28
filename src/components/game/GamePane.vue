@@ -24,11 +24,13 @@
             <div class="players">
                 Players:
 
-                <div class="d-flex flex-nowrap">
-                    <div>
-                        <PlayerPanel :game="myGameID" :self="players[myPlayerID]" :player="deckPlayer"></PlayerPanel>
+                <div class="gameTable">
+                    <div class="deckView">
+                        <div class="playerPanels">
+                            <PlayerPanel :game="myGameID" :self="players[myPlayerID]" :player="deckPlayer"></PlayerPanel>
+                        </div>
                     </div>
-                    <div>
+                    <div class="playerView">
                         <div class="playerPanels">
                             <PlayerPanel v-for="(player, playerID) in players" :key="playerID" :game="myGameID" :player="player" :self="players[myPlayerID]"></PlayerPanel>
                         </div>
@@ -629,13 +631,51 @@ export default {
     border-top: 1px solid lightgray;
 }
 
-.playerPanels {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 li.event {
     font-family: monospace;
+}
+
+.players {
+    .gameTable {
+        display: flex;
+        flex-wrap: nowrap;
+
+        @media (max-width: 450px) {
+            flex-direction: column;
+        }
+
+        .deckView {
+            flex-basis: 220px;
+            justify-content: center;
+
+            @media (max-width: 450px) {
+                flex-basis: auto;
+                align-items: center;
+            }
+        }
+
+        .playerView {
+            flex-grow: 1;
+            flex-basis: auto;
+
+            @media (max-width: 450px) {
+                align-items: center;
+            }
+        }
+
+        .playerPanels {
+            display: flex;
+            flex-wrap: wrap;
+
+            flex-direction: row;
+            align-items: flex-start;
+
+            @media (max-width: 450px) {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
 }
 </style>
 
