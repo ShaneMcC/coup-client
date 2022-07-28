@@ -34,7 +34,7 @@
             </div>
 
             <div class="actions" v-if="players[myPlayerID]">
-                <strong>{{ actionsMessage }}</strong>
+                <strong v-html="actionsMessage"></strong>
                 <br>
                 Available Actions:
 
@@ -64,7 +64,7 @@
                 <button class="btn btn-sm btn-primary" v-if="showGameLog" @click="showGameLog = false">Hide</button>
 
                 <ul v-if="showGameLog">
-                    <li v-for="(log, id) in gameLog" :key="id" class="event">
+                    <li v-for="(log, id) in gameLog" :key="id" class="event" :class="log.event.__type">
                         [<span class="date" v-html="new Date(log.date).toLocaleTimeString()"></span>]
                         <span class="date" v-html="log.message"></span>
                         <br v-if="log.separator">
@@ -233,12 +233,14 @@ export default {
                     this.myPlayerID = e.id;
                     this.addToGameLog({
                         date: e.date,
-                        message: `You joined the game as ${this.htmlEntities(this.players[e.id].name)}`
+                        event: e,
+                        message: `You joined the game as <span class="player">${this.htmlEntities(this.players[e.id].name)}</span>`
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.id].name)} joined the game`
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.id].name)}</span> joined the game`
                     });
                 }
             });
@@ -248,24 +250,28 @@ export default {
                     if (e.reason) {
                         this.addToGameLog({
                             date: e.date,
-                            message: `${this.htmlEntities(this.players[e.id].name)} was kicked from the game by ${this.htmlEntities(this.players[e.kickedBy].name)} (${this.htmlEntities(e.reason)})`
+                            event: e,
+                            message: `<span class="player">${this.htmlEntities(this.players[e.id].name)}</span> was kicked from the game by <span class="kickedBy">${this.htmlEntities(this.players[e.kickedBy].name)}</span> (<span class="reason">${this.htmlEntities(e.reason)}</span>)`
                         });
                     } else {
                         this.addToGameLog({
                             date: e.date,
-                            message: `${this.htmlEntities(this.players[e.id].name)} was kicked from the game by ${this.htmlEntities(this.players[e.kickedBy].name)}`
+                            event: e,
+                            message: `<span class="player">${this.htmlEntities(this.players[e.id].name)}</span> was kicked from the game by <span class="kickedBy">${this.htmlEntities(this.players[e.kickedBy].name)}</span>`
                         });
                     }
                 } else {
                     if (e.reason) {
                         this.addToGameLog({
                             date: e.date,
-                            message: `${this.htmlEntities(this.players[e.id].name)} left the game (${this.htmlEntities(e.reason)})`
+                            event: e,
+                            message: `<span class="player">${this.htmlEntities(this.players[e.id].name)}</span> left the game (<span class="reason">${this.htmlEntities(e.reason)}</span>)`
                         });
                     } else {
                         this.addToGameLog({
                             date: e.date,
-                            message: `${this.htmlEntities(this.players[e.id].name)} left the game`
+                            event: e,
+                            message: `<span class="player">${this.htmlEntities(this.players[e.id].name)}</span> left the game`
                         });
                     }
                 }
@@ -279,7 +285,8 @@ export default {
             this.$events.on("playerReady", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} is ready`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is ready`
                 });
                 this.players[e.player].ready = true;
             });
@@ -287,7 +294,8 @@ export default {
             this.$events.on("playerNotReady", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} is not ready`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is not ready`
                 });
                 this.players[e.player].ready = false;
             });
@@ -295,7 +303,8 @@ export default {
             this.$events.on("setPlayerName", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} is now ${this.htmlEntities(e.name)}`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is now <span class="player">${this.htmlEntities(e.name)}</span>`
                 });
 
                 this.players[e.player]["name"] = e.name;
@@ -309,7 +318,8 @@ export default {
 
                 this.addToGameLog({
                     date: e.date,
-                    message: `Game over. ${this.htmlEntities(this.players[e.winner].name)} was the winner.`,
+                    event: e,
+                    message: `Game over. <span class="player">${this.htmlEntities(this.players[e.winner].name)}</span> was the winner.`,
                     actionMessage: true
                 });
 
@@ -322,6 +332,7 @@ export default {
 
                 this.addToGameLog({
                     date: e.date,
+                    event: e,
                     message: `Game ended. ${e.reason}`,
                     actionMessage: true
                 });
@@ -333,6 +344,7 @@ export default {
             this.$events.on("startGame", (e) => {
                 this.addToGameLog({
                     date: e.date,
+                    event: e,
                     message: `Game started.`,
                     actionMessage: true,
                     separator: true
@@ -346,7 +358,8 @@ export default {
             this.$events.on("playerGainedCoins", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} gained ${e.coins} coins`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> gained <span class="coins">${e.coins}</span> coins`
                 });
 
                 this.players[e.player].coins += e.coins;
@@ -355,7 +368,8 @@ export default {
             this.$events.on("playerLostCoins", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} lost ${e.coins} coins`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> lost <span class="coins">${e.coins}</span> coins`
                 });
 
                 this.players[e.player].coins -= e.coins;
@@ -364,20 +378,22 @@ export default {
             this.$events.on("playerSpentCoins", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} spent ${e.coins} coins`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> spent <span class="coins">${e.coins}</span> coins`
                 });
 
                 this.players[e.player].coins -= e.coins;
             });
 
             this.$events.on("setDeck", (e) => {
-                this.deck = e.deck;
+                this.deck = [...e.deck];
             });
 
             this.$events.on("allocateInfluence", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} was allocated influence: ${e.influence}`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> was allocated influence: <span class="influence">${e.influence}</span>`
                 });
 
                 this.players[e.player].influence.push(e.influence);
@@ -403,7 +419,8 @@ export default {
                 discardInfluenceHandler(e);
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} discarded influence: ${e.influence}`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> discarded influence: <span class="influence">${e.influence}</span>`
                 });
                 this.players[e.player].discardedInfluence.push(e.influence);
             });
@@ -412,7 +429,8 @@ export default {
                 discardInfluenceHandler(e);
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} returned influence to the deck: ${e.influence}`,
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> returned influence to the deck: <span class="influence">${e.influence}</span>`,
                     actionMessage: true
                 });
 
@@ -424,7 +442,8 @@ export default {
 
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} started their turn.`,
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> started their turn.`,
                     actionMessage: true,
                     separator: true,
                 });
@@ -445,13 +464,15 @@ export default {
                 if (e.target) {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} performed action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} performed action ${e.action}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -461,13 +482,15 @@ export default {
                 if (e.target) {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -477,13 +500,15 @@ export default {
                 if (e.target) {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action} on ${this.htmlEntities(this.players[e.target].name)}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
-                        message: `${this.htmlEntities(this.players[e.player].name)} is attempting action ${e.action}`,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -492,14 +517,16 @@ export default {
             this.$events.on("playerPassed", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} allowed the action.`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> allowed the action.`
                 });
             });
 
             this.$events.on("playerCountered", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.challenger].name)} countered ${this.htmlEntities(this.players[e.challenger].name)}'s ${e.action} with: ${e.counter}.`,
+                    event: e,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> countered <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action">${e.action}</span> with: <span class="counter">${e.counter}</span>.`,
                     actionMessage: true
                 });
             });
@@ -507,7 +534,8 @@ export default {
             this.$events.on("playerChallenged", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.challenger].name)} challenged ${this.htmlEntities(this.players[e.challenger].name)}'s ${e.action} with: ${e.counter}.`,
+                    event: e,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> challenged <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action">${e.action}</span>.`,
                     actionMessage: true
                 });
             });
@@ -515,14 +543,16 @@ export default {
             this.$events.on("playerPassedChallenge", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} passed the challenge by revealing ${e.influence}.`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> passed the challenge by revealing <span class="influence">${e.influence}</span>.`
                 });
             });
 
             this.$events.on("playerFailedChallenge", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} failed the challenge.`
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> failed the challenge by revealing <span class="influence">${e.influence}</span>.`
                 });
             });
 
@@ -531,7 +561,8 @@ export default {
                 var reason = e.reason ? e.reason : 'Unknown';
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} must discard ${count} influence (Reason: ${reason}).`,
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> must discard <span class="count">${count}</span> influence (Reason: <span class="reason">${reason}</span>).`,
                     actionMessage: true
                 });
             });
@@ -540,7 +571,8 @@ export default {
                 var count = e.count ? e.count : 2;
                 this.addToGameLog({
                     date: e.date,
-                    message: `${this.htmlEntities(this.players[e.player].name)} is exchanging ${count} cards with the deck.`,
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is exchanging <span class="count">${count}</span> cards with the deck.`,
                     actionMessage: true
                 });
             });
@@ -552,21 +584,24 @@ export default {
             this.$events.on("chatMessage", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `&lt;${this.htmlEntities(this.players[e.player].name)}&gt; ${this.htmlEntities(e.message)}`
+                    event: e,
+                    message: `&lt;<span class="player">${this.htmlEntities(this.players[e.player].name)}</span>&gt; <span class="message">${this.htmlEntities(e.message)}</span>`
                 });
             });
 
             this.$events.on("serverMessage", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `<strong>Server Message:</strong> ${this.htmlEntities(e.message)}`
+                    event: e,
+                    message: `<strong>Server Message:</strong> <span class="message">${this.htmlEntities(e.message)}</span>`
                 });
             });
 
             this.$events.on("adminMessage", (e) => {
                 this.addToGameLog({
                     date: e.date,
-                    message: `<strong>Admin Message:</strong> ${this.htmlEntities(e.message)}`
+                    event: e,
+                    message: `<strong>Admin Message:</strong> <span class="message">${this.htmlEntities(e.message)}</span>`
                 });
             });
         }
@@ -592,5 +627,54 @@ export default {
 
 li.event {
     font-family: monospace;
+}
+</style>
+
+<!-- This needs to be separate because vue doesn't actually know about these things 'cos they are in strings. -->
+<style lang="scss">
+.gameLog {
+    .date {
+        font-weight: normal;
+    }
+
+    .player {
+        font-weight: bold;
+    }
+
+    .kickedBy {
+        font-weight: bold;
+    }
+
+    .reason {
+        font-weight: bold;
+    }
+
+    .influence {
+        font-weight: bold;
+    }
+
+    .coins {
+        font-weight: bold;
+    }
+
+    .count {
+        font-weight: bold;
+    }
+
+    .action {
+        font-weight: bold;
+    }
+
+    .counter {
+        font-weight: bold;
+    }
+
+    .target {
+        font-weight: bold;
+    }
+
+    .challenger {
+        font-weight: bold;
+    }
 }
 </style>
