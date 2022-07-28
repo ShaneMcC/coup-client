@@ -1,4 +1,5 @@
 {
     "siteName": "Coup Client",
-    "server": "ws://:3000/"
+    "server": "ws://:3000/",
+    "gitVersion": "Unknown"
 }

@@ -9,6 +9,11 @@ COPY src /app/src
 COPY public /app/public
 RUN npm run build
 
+COPY .git /app/.git
+ADD docker/jq /bin/jq
+ADD docker/addGitVersion.sh /tmp/addGitVersion.sh
+RUN /tmp/addGitVersion.sh
+
 FROM nginx:mainline-alpine AS nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 ADD docker/nginx.conf /etc/nginx/nginx.conf
