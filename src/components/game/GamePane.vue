@@ -135,12 +135,9 @@ export default {
         this.$events = new emitter();
         this.addInternalHandlers();
 
-        console.log('Created');
-
         // This is mostly for dev, our parent keeps track of events for us to reload with.
         if (this.initialEvents.length > 0) {
             for (const event of this.initialEvents) {
-                console.log('SPECIAL: ' + JSON.stringify(event));
                 this.handleEvent(event);
             }
 
@@ -403,13 +400,22 @@ export default {
                 this.deck.splice(0, 1);
             });
 
+            this.$events.on("allocateNextInfluence", (e) => {
+                e.influence = this.deck.shift();
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> was allocated the next influence in the deck: <span class="influence">${e.influence}</span>`
+                });
+
+                this.players[e.player].influence.push(e.influence);
+            });
+
             const discardInfluenceHandler = (e) => {
-                var influenceLocation = -1;
+                var influenceLocation = this.players[e.player].influence.indexOf(e.influence);
 
-                if (e.player == this.myPlayerID) {
-                    influenceLocation = this.players[e.player].influence.indexOf(e.influence);
-
-                } else {
+                if (influenceLocation == -1) {
                     influenceLocation = this.players[e.player].influence.indexOf("UNKNOWN");
                 }
 
