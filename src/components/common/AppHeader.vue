@@ -7,21 +7,17 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-lg-0">
                     <li class="nav-item">
                         <router-link class="nav-link" :class="{active: this.$route.name  == 'Home'}" to="/">Home</router-link>
                     </li>
                 </ul>
 
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="ms-auto nav-item">
+                <ul class="navbar-nav ms-auto mb-lg-0">
+                    <li class="nav-item">
                         <router-link class="nav-link" :class="{active: this.$route.name  == 'Admin'}" to="/admin">Admin</router-link>
                     </li>
                 </ul>
-
-                <div class="navbar-nav">
-
-                </div>
             </div>
         </div>
     </nav>
