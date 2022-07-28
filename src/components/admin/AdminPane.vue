@@ -289,6 +289,7 @@ export default {
 
     div {
         flex-basis: 50%;
+        flex-grow: 1;
     }
 }
 
