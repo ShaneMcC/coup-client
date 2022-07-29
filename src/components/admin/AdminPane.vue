@@ -34,9 +34,13 @@
 
                 <div class="actions">
                     <button @click="saveAllGames" class="btn btn-success">Save All Games</button>
-                    <button @click="loadAllGames" class="btn btn-primary">Load All Games</button>
-                    <button @click="killAllGames" class="btn btn-danger">Kill All Games</button>
                     <button @click="refreshAllGames" class="btn btn-primary">Refresh All Games</button>
+                    <button @click="killAllGames" class="btn btn-danger">Kill All Games</button>
+                    <button @click="sendGlobalAdminMessage()" class="btn btn-secondary">Send Message</button>
+                </div>
+
+                <div class="actions">
+                    <button @click="loadAllGames" class="btn btn-primary">Load All Games</button>
                 </div>
 
                 <div class="actions">
@@ -232,6 +236,13 @@ export default {
             if (message == undefined || message.length == 0) { message = prompt('Message:'); }
             if (message != undefined && message.length > 0) {
                 this.$ioSocket.emit("sendAdminMessage", gameId, message);
+            }
+        },
+
+        sendGlobalAdminMessage(message) {
+            if (message == undefined || message.length == 0) { message = prompt('Message:'); }
+            if (message != undefined && message.length > 0) {
+                this.$ioSocket.emit("sendGlobalAdminMessage", message);
             }
         },
 
