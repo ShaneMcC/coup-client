@@ -1,25 +1,33 @@
 <template>
-  <div :class="{ 'player': true, 'ready': player.ready, 'active': player.active, 'dead': (player.influence.length == 0 && player.discardedInfluence.length > 0) }">
-    <div class="name" :class="{ self: (player == self) }">
-      {{ player.name }}
-    </div>
+  <div class="playerWrapper">
+    <div :class="{ 'player': true, 'ready': player.ready, 'active': player.active, 'dead': (player.influence.length == 0 && player.discardedInfluence.length > 0) }">
+      <div class="name" :class="{ self: (player == self) }">
+        {{ player.name }}
+      </div>
 
-    <div v-if="player.coins !== undefined" class="coins">
-      Coins: {{ player.coins }}
-    </div>
+      <div v-if="player.coins !== undefined" class="coins">
+        Coins: {{ player.coins }}
+      </div>
 
-    <div class="influence" :class="influence" v-for="(influence, key) in player.influence" :key="key">
-      {{ influence }}
-    </div>
+      <div class="influenceWrapper">
+        <div class="influenceList">
+          <div class="influence" :class="influence" v-for="(influence, key) in player.influence" :key="key">
+            {{ influence }}
+          </div>
 
-    <div class="discarded influence" :class="influence" v-for="(influence, key) in player.discardedInfluence" :key="key">
-      {{ influence }}
-    </div>
+          <div class="discarded influence" :class="influence" v-for="(influence, key) in player.discardedInfluence" :key="key">
+            {{ influence }}
+          </div>
 
-    <div class="actions" v-if="self != undefined">
-      <span v-for="(action, actionID) in player.actions" :key="actionID">
-        <button class="btn btm-sm btn-primary" @click="doPlayerAction(actionID)">{{ action.name }}</button>
-      </span>
+          <div v-if="(player.influence.length + player.discardedInfluence.length) % 2 != 0" class="influenceSpacer"></div>
+        </div>
+      </div>
+
+      <div class="actions" v-if="self != undefined">
+        <span v-for="(action, actionID) in player.actions" :key="actionID">
+          <button class="btn btm-sm btn-primary" @click="doPlayerAction(actionID)">{{ action.name }}</button>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -47,99 +55,133 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.player {
-  display: inline-block;
-  width: 200px;
-  min-height: 110px;
-  border: 4px solid black;
-  margin: 10px;
-  padding: 5px;
+.playerWrapper {
+  min-width: 220px;
+  padding: 10px;
 
-  background-color: lightgrey;
-  color: black;
+  @media (max-width: 450px) {
+    width: 100%;
+  }
 
-  .name {
-    &.self {
-      font-weight: bold;
+  .player {
+    display: inline-block;
+    width: 100%;
+    min-height: 110px;
+    border: 4px solid black;
+    padding: 5px;
 
-      &::after {
-        content: ' (You)';
+    background-color: lightgrey;
+    color: black;
+
+    .name {
+      &.self {
+        font-weight: bold;
+
+        &::after {
+          content: ' (You)';
+        }
       }
     }
-  }
 
-  .actions {
-    margin: 10px;
-    text-align: center;
-  }
-
-  .influence {
-    text-align: center;
-    width: 150px;
-    margin: 5px auto;
-    padding: 3px;
-    border: 2px solid black;
-
-    text-transform: lowercase;
-
-    &::first-letter {
-      text-transform: uppercase;
+    .actions {
+      margin: 10px;
+      text-align: center;
     }
 
-    &.UNKNOWN {
+    .influenceWrapper {
+      display: flex;
+
+      .influenceList {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin: 0px auto;
+
+        @media (max-width: 450px) {
+          flex-direction: row;
+          justify-content: center;
+        }
+
+        .influenceSpacer {
+          width: 150px;
+          display: none;
+
+          @media (max-width: 450px) {
+            display: block;
+            margin-left: calc(2 * 5px);
+          }
+        }
+
+        .influence {
+          width: 150px;
+          text-align: center;
+          margin: 5px;
+          padding: 3px;
+          border: 2px solid black;
+
+          text-transform: lowercase;
+
+          &::first-letter {
+            text-transform: uppercase;
+          }
+
+          &.UNKNOWN {
+            background-color: white;
+            color: black
+          }
+
+          &.ASSASSIN {
+            background-color: black;
+            color: white;
+          }
+
+          &.AMBASSADOR {
+            background-color: orange;
+            color: black;
+          }
+
+          &.CAPTAIN {
+            background-color: navy;
+            color: white;
+          }
+
+          &.CONTESSA {
+            background-color: crimson;
+            color: black;
+          }
+
+          &.DUKE {
+            background-color: fuchsia;
+            color: black;
+          }
+
+          &.discarded {
+            border: 2px dashed grey;
+            background-color: lightgrey;
+            color: black;
+          }
+        }
+      }
+    }
+
+    .coins,
+    .name {
+      text-align: center;
+    }
+
+    &.ready {
+      border: 4px solid green;
       background-color: white;
-      color: black
     }
 
-    &.ASSASSIN {
-      background-color: black;
-      color: white;
+    &.active {
+      background-color: lightgreen;
     }
 
-    &.AMBASSADOR {
-      background-color: orange;
-      color: black;
+    &.dead {
+      border: 4px solid red;
+      background-color: lightcoral;
     }
-
-    &.CAPTAIN {
-      background-color: navy;
-      color: white;
-    }
-
-    &.CONTESSA {
-      background-color: crimson;
-      color: black;
-    }
-
-    &.DUKE {
-      background-color: fuchsia;
-      color: black;
-    }
-
-    &.discarded {
-      border: 2px dashed grey;
-      background-color: lightgrey;
-      color: black;
-    }
-  }
-
-  .coins,
-  .name {
-    text-align: center;
-  }
-
-  &.ready {
-    border: 4px solid green;
-    background-color: white;
-  }
-
-  &.active {
-    background-color: lightgreen;
-  }
-
-  &.dead {
-    border: 4px solid red;
-    background-color: lightcoral;
   }
 }
 
