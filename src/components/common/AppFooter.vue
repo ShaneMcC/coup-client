@@ -3,7 +3,11 @@
         <div class="container-fluid">
             <hr>
             <p class="text-muted">
-                <small><a href="https://github.com/shanemcc/coup-client">coup-client{{ $appConfig.gitVersion != 'Unknown' ? ' v' + $appConfig.gitVersion : ''}}</a> - &copy; Shane 'Dataforce' Mc Cormack</small>
+                <small>
+                    <a href="https://github.com/shanemcc/coup-client">coup-client{{ $appConfig.gitVersion != 'Unknown' ? ' v' + $appConfig.gitVersion : ''}}</a>
+                    <br>
+                    &copy; Shane 'Dataforce' Mc Cormack
+                </small>
             </p>
         </div>
     </footer>
@@ -28,6 +32,9 @@ export default {
 
     p {
         text-align: right;
+        @media (max-width: 450px) {
+            text-align: center;
+        }
     }
 }
 
