@@ -6,7 +6,7 @@
         </ConnectingPane>
 
         <div v-if="gameExists">
-            <PreGamePane v-if="connected && (myPlayerID == undefined)" :showSpectateButton="!inGame" v-model:playerName="playerName" :gameID="myGameID">
+            <PreGamePane v-if="connected && !gameStarted && (myPlayerID == undefined)" :showSpectateButton="!inGame" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
             <GamePane :key="myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
@@ -37,6 +37,7 @@ export default {
 
             connected: false,
             inGame: false,
+            gameStarted: false,
             gameExists: false,
             gameStateKnown: false,
             gameJoinAttempted: false,
@@ -200,6 +201,10 @@ export default {
         },
 
         addInternalHandlers() {
+            this.$events.on("startGame", () => {
+                this.gameStarted  = true;
+            });
+
             this.$events.on("addPlayer", (e) => {
                 if (e.self) {
                     this.myPlayerMask = e.id;
