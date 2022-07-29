@@ -25,7 +25,7 @@
                 Players:
 
                 <div class="gameTable">
-                    <div class="deckView">
+                    <div v-if="gameStarted" class="deckView">
                         <div class="playerPanels">
                             <PlayerPanel :game="myGameID" :self="players[myPlayerID]" :player="deckPlayer"></PlayerPanel>
                         </div>
@@ -33,6 +33,10 @@
                     <div class="playerView">
                         <div class="playerPanels">
                             <PlayerPanel v-for="(player, playerID) in players" :key="playerID" :game="myGameID" :player="player" :self="players[myPlayerID]"></PlayerPanel>
+
+                            <div v-if="Object.keys(players).length == 0">
+                                <strong>There are currently no players in this game.</Strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,6 +107,7 @@ export default {
 
     data() {
         return {
+            gameStarted: false,
             gameLoaded: false,
             gameEvents: [],
             showEvents: false,
@@ -218,6 +223,7 @@ export default {
         addInternalHandlers() {
             this.$events.on("gameCreated", () => {
                 this.gameLoaded = false;
+                this.gameStarted = false;
             });
 
             this.$events.on("addPlayer", (e) => {
@@ -344,6 +350,8 @@ export default {
             });
 
             this.$events.on("startGame", (e) => {
+                this.gameStarted = true;
+
                 this.addToGameLog({
                     date: e.date,
                     event: e,
