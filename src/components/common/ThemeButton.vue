@@ -85,6 +85,8 @@ html {
 }
 
 .themeButton {
+    display: inline-block;
+
     .switch-checkbox {
         display: none;
     }

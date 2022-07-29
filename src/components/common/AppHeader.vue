@@ -8,16 +8,16 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav me-auto mb-lg-0">
-                    <li class="nav-item">
+                    <li class="nav-item text-center">
                         <router-link class="nav-link" :class="{ active: this.$route.name == 'Home' }" to="/">Home</router-link>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto mb-lg-0">
-                    <li class="nav-item">
+                    <li class="nav-item text-center">
                         <router-link class="nav-link" :class="{ active: this.$route.name == 'Admin' }" to="/admin">Admin</router-link>
                     </li>
-                    <li>
+                    <li class="nav-item text-center">
                         <ThemeButton></ThemeButton>
                     </li>
                 </ul>
