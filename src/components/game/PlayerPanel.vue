@@ -143,11 +143,11 @@ export default {
   }
 }
 
-    html.dark-theme {
-      .player {
-          &.ready {
-            background-color: lightgrey;
-          }
-      }
+html.dark-theme {
+  .player {
+    &.ready {
+      background-color: lightgrey;
     }
+  }
+}
 </style>
