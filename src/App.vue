@@ -28,14 +28,27 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   position: relative;
   min-height: 100%;
+
+  body {
+    padding-top: 50px;
+    margin-bottom: 60px;
+  }
 }
 
-body {
-  padding-top: 50px;
-  margin-bottom: 60px;
+html.dark-theme {
+  body {
+    background-color: #373737;
+    color: white;
+
+    a,
+    a:focus,
+    a:hover {
+      color: #fff
+    }
+  }
 }
 </style>

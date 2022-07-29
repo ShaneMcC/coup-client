@@ -97,7 +97,7 @@
             <div v-for="(game, gameID) in savedGames" :key="gameID" class="game">
                 <h2>{{ gameID }}</h2>
                 <div class="actions">
-                    <button class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
+                    <button :disabled="knownGames[gameID]" class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
                     <button class="btn btn-sm btn-danger" @click="removeSavedGame(gameID)">Delete</button>
                 </div>
             </div>

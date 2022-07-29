@@ -56,6 +56,7 @@ export default {
   padding: 5px;
 
   background-color: lightgrey;
+  color: black;
 
   .name {
     &.self {
@@ -141,4 +142,12 @@ export default {
     background-color: lightcoral;
   }
 }
+
+    html.dark-theme {
+      .player {
+          &.ready {
+            background-color: lightgrey;
+          }
+      }
+    }
 </style>
