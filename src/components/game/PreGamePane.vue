@@ -8,12 +8,12 @@
                 &nbsp;
                 <button class="btn btn-sm btn-primary" type="submit">Join Game</button>
             </div>
+            <br>
         </form>
 
         <div v-if="showSpectateButton">
-            <br>
-            <br>
             <button class="btn btn-sm btn-info" @click="spectateGame">Spectate Game</button>
+            <br>
         </div>
     </div>
 </template>
