@@ -229,6 +229,7 @@ export default {
     watch: {
         $route (to, from) {
             if (to.params.gameID != from.params.gameID || to.params.playerId != from.params.playerId) {
+                this.$ioSocket.emit('exitGame', this.myGameID);
                 this.reset();
                 this.connected = true;
                 this.myPlayerID = to.params.playerId;
