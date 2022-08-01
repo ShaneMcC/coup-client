@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="actions" v-if="players[myPlayerID]">
+            <div class="actions" v-if="!gameOver && players[myPlayerID]">
                 <strong v-html="actionsMessage"></strong>
                 <br>
                 Available Actions:
@@ -53,18 +53,25 @@
                     <div v-if="Object.keys(availableActions).length == 0" class="actionPanels">
                         <strong>No actions available.</strong>
                     </div>
-
-                    <form class="form" @submit.prevent="sendChatMessage">
-                        <div class="d-flex flex-row align-items-center flex-wrap">
-                            <label for="chatMessage">Chat:</label>
-                            <input id="chatMessage" class="form-control w-auto mx-2" v-model="chatMessage">
-
-                            <button class="btn btn-sm btn-primary" type="submit">Send</button>
-                        </div>
-                    </form>
                 </div>
+            </div>
 
+            <div class="actions" v-if="gameOver && players[myPlayerID]">
+                <strong v-html="actionsMessage"></strong>
+                <br>
+                <button v-if="!nextGameID" class="btn btn-success" @click="getNextGame">Create Next Game</button>
+                <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game</button>
+            </div>
 
+            <div class="actions" v-if="players[myPlayerID]">
+                <form class="form" @submit.prevent="sendChatMessage">
+                    <div class="d-flex flex-row align-items-center flex-wrap">
+                        <label for="chatMessage">Chat:</label>
+                        <input id="chatMessage" class="form-control w-auto mx-2" v-model="chatMessage">
+
+                        <button class="btn btn-sm btn-primary" type="submit">Send</button>
+                    </div>
+                </form>
             </div>
 
             <div class="gameLog">
@@ -108,7 +115,9 @@ export default {
     data() {
         return {
             gameStarted: false,
+            gameOver: false,
             gameLoaded: false,
+            nextGameID: '',
             gameEvents: [],
             showEvents: false,
             gameLog: [],
@@ -189,6 +198,10 @@ export default {
             delete this.availableActions[actionID];
         },
 
+        getNextGame() {
+            this.$ioSocket.emit("getNextGame", this.myGameID);
+        },
+
         sendChatMessage() {
             this.$ioSocket.emit("action", this.myGameID, 'CHAT', this.chatMessage);
             this.chatMessage = '';
@@ -224,6 +237,17 @@ export default {
             this.$events.on("gameCreated", () => {
                 this.gameLoaded = false;
                 this.gameStarted = false;
+            });
+
+            this.$events.on("nextGameAvailable", (e) => {
+                if (e.nextGameID) {
+                    this.nextGameID = e.nextGameID;
+                    this.addToGameLog({
+                        date: e.date,
+                        event: e,
+                        message: `Next game available: <span class="nextGame"><a href="/game/${this.htmlEntities(e.nextGameID)}">${this.htmlEntities(e.nextGameID)}</span>`
+                    });
+                }
             });
 
             this.$events.on("addPlayer", (e) => {
@@ -333,6 +357,8 @@ export default {
 
                 this.activePlayer = e.winner;
                 this.players[this.activePlayer].active = true;
+
+                this.gameOver = true;
             });
 
             this.$events.on("gameEnded", (e) => {
@@ -484,14 +510,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -502,14 +528,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -520,14 +546,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -545,7 +571,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> countered <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action">${e.action}</span> with: <span class="counter">${e.counter}</span>.`,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> countered <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span> with: <span class="counter ${e.counter}">${e.counter}</span>.`,
                     actionMessage: true
                 });
             });
@@ -554,7 +580,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> challenged <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action">${e.action}</span>.`,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> challenged <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span>.`,
                     actionMessage: true
                 });
             });
@@ -690,6 +716,10 @@ li.event {
 <!-- This needs to be separate because vue doesn't actually know about these things 'cos they are in strings. -->
 <style lang="scss">
 .gameLog {
+    .nextGame {
+        font-weight: bold;
+    }
+
     .date {
         font-weight: normal;
     }

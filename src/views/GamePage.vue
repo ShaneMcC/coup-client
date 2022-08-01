@@ -9,7 +9,7 @@
             <PreGamePane v-if="connected && !gameStarted && (myPlayerID == undefined)" :showSpectateButton="!inGame" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
-            <GamePane :key="myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
+            <GamePane :key="myGameId + '/' + myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
             </GamePane>
         </div>
 
@@ -68,6 +68,7 @@ export default {
         this.$ioSocket.on("gameJoined", this.handleGameJoined);
         this.$ioSocket.on("handleGameEvent", this.handleGameEvent);
         this.$ioSocket.on("gameExists", this.handleGameExists);
+        this.$ioSocket.on("foundNextGame", this.handleFoundNextGame);
         this.$ioSocket.on("gameDoesNotExist", this.handleGameDoesNotExist);
         this.$ioSocket.on("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.on("refreshGame", this.handleRefreshGame);
@@ -90,6 +91,7 @@ export default {
         this.$ioSocket.off("gameJoined", this.handleGameJoined);
         this.$ioSocket.off("handleGameEvent", this.handleGameEvent);
         this.$ioSocket.off("gameExists", this.handleGameExists);
+        this.$ioSocket.off("foundNextGame", this.handleFoundNextGame);
         this.$ioSocket.off("gameDoesNotExist", this.handleGameDoesNotExist);
         this.$ioSocket.off("gameRemoved", this.handleGameRemoved);
         this.$ioSocket.off("refreshGame", this.handleRefreshGame);
@@ -143,6 +145,10 @@ export default {
                     this.$ioSocket.emit("spectateGame", this.myGameID);
                 }
             }
+        },
+        
+        handleFoundNextGame(event) {
+            this.$router.push(`/game/${event.nextGameID}`);
         },
 
         handleRejoinFailed() {
@@ -217,6 +223,18 @@ export default {
                     this.myPlayerMask = undefined;
                 }
             });
+        }
+    },
+
+    watch: {
+        $route (to, from) {
+            if (to.params.gameID != from.params.gameID || to.params.playerId != from.params.playerId) {
+                this.reset();
+                this.connected = true;
+                this.myPlayerID = to.params.playerId;
+                this.myGameID = to.params.gameId;
+                this.checkExists();
+            }
         }
     },
 

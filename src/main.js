@@ -19,5 +19,6 @@ fetch('/config.json').then(async (result) => {
     app.mount('#app'); 
 });
 
+
 // eslint-disable-next-line
-import _Alert from 'bootstrap/js/dist/alert'
+import { _Boostrap } from 'bootstrap'
