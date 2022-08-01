@@ -470,7 +470,7 @@ export default {
                 this.players[e.player].discardedInfluence.push(e.influence);
             });
 
-            this.$events.on("returnInfluenceToDeck", (e) => {
+            const returnInfluenceHandler = (e) => {
                 discardInfluenceHandler(e);
                 this.addToGameLog({
                     date: e.date,
@@ -480,7 +480,9 @@ export default {
                 });
 
                 this.deck.push(e.influence);
-            });
+            }
+            this.$events.on("returnInfluenceToDeck", returnInfluenceHandler);
+            this.$events.on("returnKnownInfluenceToDeck", returnInfluenceHandler);
 
             this.$events.on("beginPlayerTurn", (e) => {
                 this.turnLog = [];
