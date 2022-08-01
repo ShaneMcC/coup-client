@@ -80,7 +80,7 @@ html {
         --background-color-secondary: #fafafa;
         --accent-color: #cacaca;
         --text-primary-color: #222;
-        --element-size: 4rem;
+        --element-size: 3rem;
     }
 }
 

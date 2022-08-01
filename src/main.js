@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './routes.js'
-
 import { Manager as ioManager } from "socket.io-client";
 
 // Load Config Settings, then launch app.
@@ -19,3 +18,6 @@ fetch('/config.json').then(async (result) => {
     app.provide('$appConfig', $appConfig);
     app.mount('#app'); 
 });
+
+// eslint-disable-next-line
+import _Alert from 'bootstrap/js/dist/alert'

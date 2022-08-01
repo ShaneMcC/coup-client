@@ -17,7 +17,7 @@
                     <li class="nav-item text-center">
                         <router-link class="nav-link" :class="{ active: this.$route.name == 'Admin' }" to="/admin">Admin</router-link>
                     </li>
-                    <li class="nav-item text-center">
+                    <li class="nav-item text-center align-middle">
                         <ThemeButton></ThemeButton>
                     </li>
                 </ul>
@@ -47,3 +47,12 @@ export default {
     components: { ThemeButton },
 }
 </script>
+
+<style scoped>
+li.nav-item.align-middle:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+</style>

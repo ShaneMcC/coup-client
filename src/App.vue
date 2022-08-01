@@ -51,4 +51,7 @@ html.dark-theme {
     }
   }
 }
+
+// @import '~bootstrap/dist/css/bootstrap.css';
+@import "~bootstrap/scss/bootstrap";
 </style>
