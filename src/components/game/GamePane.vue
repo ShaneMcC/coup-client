@@ -543,6 +543,24 @@ export default {
                 }
             });
 
+            this.$events.on("playerActionStillCounterable", (e) => {
+                if (e.target) {
+                    this.addToGameLog({
+                        date: e.date,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        actionMessage: true
+                    });
+                } else {
+                    this.addToGameLog({
+                        date: e.date,
+                        event: e,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.action}</span>`,
+                        actionMessage: true
+                    });
+                }
+            });
+
             this.$events.on("challengeablePlayerAction", (e) => {
                 if (e.target) {
                     this.addToGameLog({
