@@ -44,6 +44,13 @@
                 </div>
 
                 <div class="actions">
+                    <button @click="cleanup('all')" class="btn btn-danger">Run Cleanup All</button>
+                    <button @click="cleanup('unused')" class="btn btn-danger">Run Cleanup Unused</button>
+                    <button @click="cleanup('finished')" class="btn btn-danger">Run Cleanup Finished</button>
+                    <button @click="cleanup('stalled')" class="btn btn-danger">Run Cleanup Stalled</button>
+                </div>
+
+                <div class="actions">
                     <button @click="killServer" class="btn btn-danger">Kill Server</button>
                 </div>
             </div>
@@ -58,7 +65,7 @@
 
         <h1>Active Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
         <div class="gameList activeGames">
-            <div v-for="(game, gameID) in knownGames" :key="gameID" class="game">
+            <div v-for="(game, gameID) in knownGames" :key="gameID" class="game" :class="gameClasses(game)">
                 <h2>
                     <router-link :to="'/game/' + gameID">{{ gameID }}</router-link>
                 </h2>
@@ -98,7 +105,7 @@
 
         <h1>Saved Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
         <div class="gameList savedGames">
-            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game">
+            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game" :class="{loaded: knownGames[gameID] != undefined}">
                 <h2>{{ gameID }}</h2>
                 <div class="actions">
                     <button :disabled="knownGames[gameID]" class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
@@ -153,6 +160,13 @@ export default {
     },
 
     methods: {
+        gameClasses(game) {
+            const classes = {};
+            classes['stalled'] = game.stalled;
+            classes[game.stateName] = true;
+            return classes;
+        },
+
         prettyPrint(value) {
             return JSON.stringify(value, null, 2);
         },
@@ -207,6 +221,10 @@ export default {
 
         refreshAllGames() {
             this.$ioSocket.emit("refreshAllGames");
+        },
+
+        cleanup(type) {
+            this.$ioSocket.emit("cleanup", type);
         },
 
         killServer() {
@@ -314,6 +332,28 @@ export default {
     border: 1px solid grey;
     margin: 10px;
     display: inline-block;
+    max-width: 500px;
+    background-color: rgb(32, 96, 32);
+
+    &.NewGameState {
+        background-color: rgb(32, 32, 96);
+    }
+
+    &.stalled {
+        background-color: rgb(96, 96, 32);
+    }
+
+    &.GameOverState {
+        background-color: rgb(96, 32, 32);
+    }
+}
+
+.savedGames {
+    .game {
+        &.loaded {
+            background-color: rgb(96, 32, 32);
+        }
+    }
 }
 
 .actions .btn {
