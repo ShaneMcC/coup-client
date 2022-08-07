@@ -11,7 +11,7 @@
             <hr>
         -->
         </div>
-        
+
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">
                 We are playing as <strong>{{ players[myPlayerID].name }}</strong>
@@ -97,13 +97,13 @@
                 </ul>
             </div>
 
-            <div class="gameEvents" v-if="false">
+            <div class="gameEvents" v-if="!$appConfig.isProduction">
                 Game Events
                 <button class="btn btn-sm btn-primary" v-if="!showEvents" @click="showEvents = true">Show</button>
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
 
                 <ul v-if="showEvents">
-                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActions')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
             </div>
         </div>

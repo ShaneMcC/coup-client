@@ -7,6 +7,8 @@ import { Manager as ioManager } from "socket.io-client";
 fetch('/config.json').then(async (result) => {
     const $appConfig = result.ok ? await result.json() : {server: 'ws://:3000/', 'siteName': 'Coup'}; 
 
+    $appConfig['isProduction'] = process.env.NODE_ENV == 'production';
+
     const $ioManager = new ioManager(`${$appConfig.server.replace(/\/+$/, '')}`, {autoConnect: false});
     const $ioSocket = $ioManager.socket("/gameServer");
 
