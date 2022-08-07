@@ -30,17 +30,18 @@ export default {
 
 <style lang="scss">
 @import '@/assets/_variables.scss';
+
 html {
-  --assassin-background-color:  #{$assassin-background-color};
-  --assassin-color:  #{$assassin-color};
-  --ambassador-background-color:  #{$ambassador-background-color};
-  --ambassador-color:  #{$ambassador-color};
-  --captain-background-color:  #{$captain-background-color};
-  --captain-color:  #{$captain-color};
-  --contessa-background-color:  #{$contessa-background-color};
-  --contessa-color:  #{$contessa-color};
-  --duke-background-color:  #{$duke-background-color};
-  --duke-color:  #{$duke-color};
+  --assassin-background-color: #{$assassin-background-color};
+  --assassin-color: #{$assassin-color};
+  --ambassador-background-color: #{$ambassador-background-color};
+  --ambassador-color: #{$ambassador-color};
+  --captain-background-color: #{$captain-background-color};
+  --captain-color: #{$captain-color};
+  --contessa-background-color: #{$contessa-background-color};
+  --contessa-color: #{$contessa-color};
+  --duke-background-color: #{$duke-background-color};
+  --duke-color: #{$duke-color};
 }
 
 html {
@@ -63,6 +64,14 @@ html.dark-theme {
     a:hover {
       color: #fff
     }
+  }
+
+  .modal-content {
+    background-color: #373737;
+  }
+
+  .table {
+    color: white;
   }
 }
 </style>

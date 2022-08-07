@@ -20,7 +20,6 @@
                 We are spectating.
             </div>
 
-
             <div class="players">
                 Players:
 
@@ -63,6 +62,12 @@
                 <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game</button>
             </div>
 
+            <div class="actions">
+                <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#cheatSheetModal">
+                    Show Cheat Sheet
+                </button>
+            </div>
+
             <div class="actions" v-if="players[myPlayerID]">
                 <form class="form" @submit.prevent="sendChatMessage">
                     <div class="d-flex flex-row align-items-center flex-wrap">
@@ -97,6 +102,85 @@
                 <ul v-if="showEvents">
                     <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActionsm')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table text-center">
+                            <tr>
+                                <th>Influences</th>
+                                <th>Action</th>
+                                <th>Effect</th>
+                                <th>Counteraction</th>
+                            </tr>
+
+                            <tr>
+                                <td>&mdash;</td>
+                                <td>Income</td>
+                                <td>Gain 1 coin</td>
+                                <td>X</td>
+                            </tr>
+
+                            <tr>
+                                <td>&mdash;</td>
+                                <td>Foreign Aid</td>
+                                <td>Gain 2 coins</td>
+                                <td>&mdash;</td>
+                            </tr>
+
+                            <tr>
+                                <td>&mdash;</td>
+                                <td>Coup</td>
+                                <td>Pay 7 coins<br><small>Make any player lose 1 influence</small></td>
+                                <td>&mdash;</td>
+                            </tr>
+
+                            <tr class="DUKE">
+                                <td>DUKE</td>
+                                <td>TAX</td>
+                                <td>Gain 3 coins</td>
+                                <td>Block Foreign Aid</td>
+                            </tr>
+
+                            <tr class="ASSASSIN">
+                                <td>ASSASSIN</td>
+                                <td>ASSASSINATE</td>
+                                <td>Pay 3 coins<br><small>Make any player lose 1 influence</small></td>
+                                <td>&mdash;</td>
+                            </tr>
+
+                            <tr class="AMBASSADOR">
+                                <td>AMBASSADOR</td>
+                                <td>EXCHANGE</td>
+                                <td>Draw 2 influence, discard any 2 influence back into the deck</td>
+                                <td>Block STEAL</td>
+                            </tr>
+
+                            <tr class="CAPTAIN">
+                                <td>CAPTAIN</td>
+                                <td>STEAL</td>
+                                <td>Take 2 coins from another player</td>
+                                <td>Block STEAL</td>
+                            </tr>
+
+                            <tr class="CONTESSA">
+                                <td>CONTESSA</td>
+                                <td>&mdash;</td>
+                                <td>&mdash;</td>
+                                <td>Block ASSASSINATE</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
