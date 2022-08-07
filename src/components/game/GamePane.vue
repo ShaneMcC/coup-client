@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div v-if="false">
         <!--
             <button class="btn btn-sm btn-danger" @click="disconnect">Disconnect</button>
         -->
@@ -9,6 +10,8 @@
         <!--
             <hr>
         -->
+        </div>
+        
         <div v-if="gameLoaded">
             <div v-if="players[myPlayerID]">
                 We are playing as <strong>{{ players[myPlayerID].name }}</strong>
@@ -94,7 +97,7 @@
                 </ul>
             </div>
 
-            <div class="gameEvents">
+            <div class="gameEvents" v-if="false">
                 Game Events
                 <button class="btn btn-sm btn-primary" v-if="!showEvents" @click="showEvents = true">Show</button>
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
