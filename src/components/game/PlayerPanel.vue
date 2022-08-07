@@ -152,7 +152,7 @@ export default {
     }
 
     &.active {
-      background-color: lightgreen;
+      background-color: lightgreen !important;
     }
 
     &.dead {
