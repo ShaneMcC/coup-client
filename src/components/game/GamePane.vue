@@ -1,13 +1,13 @@
 <template>
     <div>
         <div v-if="false">
-        <!--
+            <!--
             <button class="btn btn-sm btn-danger" @click="disconnect">Disconnect</button>
         -->
-        <!--
+            <!--
             <button class="btn btn-sm btn-danger" @click="leave">Leave</button>
         -->
-        <!--
+            <!--
             <hr>
         -->
         </div>
@@ -108,7 +108,6 @@
             </div>
         </div>
 
-        <!-- Modal -->
         <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
@@ -117,71 +116,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <table class="table text-center">
-                            <tr>
-                                <th>Influences</th>
-                                <th>Action</th>
-                                <th>Effect</th>
-                                <th>Counteraction</th>
-                            </tr>
-
-                            <tr>
-                                <td>&mdash;</td>
-                                <td>Income</td>
-                                <td>Gain 1 coin</td>
-                                <td>&mdash;</td>
-                            </tr>
-
-                            <tr>
-                                <td>&mdash;</td>
-                                <td>Foreign Aid</td>
-                                <td>Gain 2 coins</td>
-                                <td>&mdash;</td>
-                            </tr>
-
-                            <tr>
-                                <td>&mdash;</td>
-                                <td>Coup</td>
-                                <td>Pay 7 coins<br><small>Make any player lose 1 influence</small></td>
-                                <td>&mdash;</td>
-                            </tr>
-
-                            <tr class="DUKE">
-                                <td>DUKE</td>
-                                <td>TAX</td>
-                                <td>Gain 3 coins</td>
-                                <td>Block Foreign Aid</td>
-                            </tr>
-
-                            <tr class="ASSASSIN">
-                                <td>ASSASSIN</td>
-                                <td>ASSASSINATE</td>
-                                <td>Pay 3 coins<br><small>Make any player lose 1 influence</small></td>
-                                <td>&mdash;</td>
-                            </tr>
-
-                            <tr class="AMBASSADOR">
-                                <td>AMBASSADOR</td>
-                                <td>EXCHANGE</td>
-                                <td>Draw 2 influence, discard any 2 influence back into the deck</td>
-                                <td>Block STEAL</td>
-                            </tr>
-
-                            <tr class="CAPTAIN">
-                                <td>CAPTAIN</td>
-                                <td>STEAL</td>
-                                <td>Take 2 coins from another player</td>
-                                <td>Block STEAL</td>
-                            </tr>
-
-                            <tr class="CONTESSA">
-                                <td>CONTESSA</td>
-                                <td>&mdash;</td>
-                                <td>&mdash;</td>
-                                <td>Block ASSASSINATE</td>
-                            </tr>
-
-                        </table>
+                        <RulesPane></RulesPane>
                     </div>
                 </div>
             </div>
@@ -193,6 +128,7 @@
 import emitter from 'tiny-emitter'
 import PlayerPanel from './PlayerPanel.vue';
 import ActionPanel from './ActionPanel.vue';
+import RulesPane from '../common/RulesPane.vue';
 
 export default {
     inject: ["$ioSocket", "$appConfig"],
@@ -758,7 +694,7 @@ export default {
             });
         }
     },
-    components: { PlayerPanel, ActionPanel }
+    components: { PlayerPanel, ActionPanel, RulesPane }
 }
 </script>
 
@@ -816,66 +752,6 @@ li.event {
                 align-items: center;
             }
         }
-    }
-}
-</style>
-
-<!-- These are separate so that all the elements can use them -->
-<style lang="scss">
-@import '@/assets/_variables.scss';
-
-.ASSASSIN {
-    background-color: $assassin-background-color;
-    color: $assassin-color;
-
-    &:hover,
-    &:active {
-        background-color: #{mix(white, $assassin-background-color, 15%)};
-        color: $assassin-color;
-    }
-}
-
-.AMBASSADOR {
-    background-color: $ambassador-background-color;
-    color: $ambassador-color;
-
-    &:hover,
-    &:active {
-        background-color: #{mix(white, $ambassador-background-color, 25%)};
-        color: $ambassador-color;
-    }
-}
-
-.CAPTAIN {
-    background-color: $captain-background-color;
-    color: $captain-color;
-
-    &:hover,
-    &:active {
-        background-color: #{mix(white, $captain-background-color, 25%)};
-        color: $captain-color;
-    }
-}
-
-.CONTESSA {
-    background-color: $contessa-background-color;
-    color: $contessa-color;
-
-    &:hover,
-    &:active {
-        background-color: #{mix(white, $contessa-background-color, 25%)};
-        color: $contessa-color;
-    }
-}
-
-.DUKE {
-    background-color: $duke-background-color;
-    color: $duke-color;
-
-    &:hover,
-    &:active {
-        background-color: #{mix(black, $duke-background-color, 25%)};
-        color: $duke-color;
     }
 }
 </style>
