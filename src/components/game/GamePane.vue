@@ -100,14 +100,14 @@
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
 
                 <ul v-if="showEvents">
-                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActionsm')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActions')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
             </div>
         </div>
 
         <!-- Modal -->
         <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>

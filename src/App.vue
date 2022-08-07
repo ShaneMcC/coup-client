@@ -68,6 +68,11 @@ html.dark-theme {
 
   .modal-content {
     background-color: #373737;
+
+    .modal-body {
+      max-width: 100%;
+      overflow-x: auto;
+    }
   }
 
   .table {
