@@ -95,7 +95,7 @@
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
 
                 <ul v-if="showEvents">
-                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActions')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents.filter(e => e.__type != 'showActionsm')" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
             </div>
         </div>
@@ -729,6 +729,66 @@ li.event {
                 align-items: center;
             }
         }
+    }
+}
+</style>
+
+<!-- These are separate so that all the elements can use them -->
+<style lang="scss">
+@import '@/assets/_variables.scss';
+
+.ASSASSIN {
+    background-color: $assassin-background-color;
+    color: $assassin-color;
+
+    &:hover,
+    &:active {
+        background-color: #{mix(white, $assassin-background-color, 15%)};
+        color: $assassin-color;
+    }
+}
+
+.AMBASSADOR {
+    background-color: $ambassador-background-color;
+    color: $ambassador-color;
+
+    &:hover,
+    &:active {
+        background-color: #{mix(white, $ambassador-background-color, 25%)};
+        color: $ambassador-color;
+    }
+}
+
+.CAPTAIN {
+    background-color: $captain-background-color;
+    color: $captain-color;
+
+    &:hover,
+    &:active {
+        background-color: #{mix(white, $captain-background-color, 25%)};
+        color: $captain-color;
+    }
+}
+
+.CONTESSA {
+    background-color: $contessa-background-color;
+    color: $contessa-color;
+
+    &:hover,
+    &:active {
+        background-color: #{mix(white, $contessa-background-color, 25%)};
+        color: $contessa-color;
+    }
+}
+
+.DUKE {
+    background-color: $duke-background-color;
+    color: $duke-color;
+
+    &:hover,
+    &:active {
+        background-color: #{mix(black, $duke-background-color, 25%)};
+        color: $duke-color;
     }
 }
 </style>

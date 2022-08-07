@@ -55,6 +55,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/_variables.scss';
+
 .playerWrapper {
   min-width: 220px;
   padding: 10px;
@@ -128,31 +130,6 @@ export default {
           &.UNKNOWN {
             background-color: white;
             color: black
-          }
-
-          &.ASSASSIN {
-            background-color: black;
-            color: white;
-          }
-
-          &.AMBASSADOR {
-            background-color: orange;
-            color: black;
-          }
-
-          &.CAPTAIN {
-            background-color: navy;
-            color: white;
-          }
-
-          &.CONTESSA {
-            background-color: crimson;
-            color: black;
-          }
-
-          &.DUKE {
-            background-color: fuchsia;
-            color: black;
           }
 
           &.discarded {

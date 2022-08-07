@@ -1,6 +1,6 @@
 <template>
     <span>
-        <button class="btn btn-dark" :class="action.classes" :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
+        <button class="btn btn-dark" :class="classes" :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
     </span>
 </template>
 
@@ -10,6 +10,28 @@ export default {
     inject: ['$ioSocket'],
 
     props: ['actionID', 'action', 'players', 'myGameID', 'myPlayerID'],
+
+    computed: {
+        classes() {
+            const classes = [];
+            
+            if (this.action.classes) {
+                for (const c of this.action.classes) {
+                    classes.push(c);
+                }
+            }
+
+            if (this.action.validCards) {
+                for (const c of this.action.validCards) {
+                    classes.push(c);
+                }
+            }
+
+            classes.push(this.actionID);
+
+            return classes;
+        }
+    },
 
     methods: {
         doAction() {
@@ -34,6 +56,7 @@ export default {
                         'action': actionName,
                         'target': v,
                         'oneTime': this.action.oneTime,
+                        'classes': [...this.classes, v],
                     }
                 }
 
@@ -51,6 +74,7 @@ export default {
                         'action': actionName,
                         'target': v.id,
                         'oneTime': this.action.oneTime,
+                        'classes': this.classes,
                     }
                 }
 
@@ -70,8 +94,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/_variables.scss';
+
+
 button {
-    padding: 10px 20px;;
+    padding: 10px 20px;
     margin: 10px;
 }
 </style>
