@@ -129,7 +129,7 @@
                                 <td>&mdash;</td>
                                 <td>Income</td>
                                 <td>Gain 1 coin</td>
-                                <td>X</td>
+                                <td>&mdash;</td>
                             </tr>
 
                             <tr>
