@@ -458,8 +458,8 @@ export default {
                     actionMessage: true
                 });
 
-                this.activePlayer = undefined;
                 this.players[this.activePlayer].active = false;
+                this.activePlayer = undefined;
             });
 
             this.$events.on("startGame", (e) => {
