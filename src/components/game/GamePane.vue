@@ -606,7 +606,16 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> allowed the action.`
+                    message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is not challenging the action.`
+                });
+            });
+
+            this.$events.on("playerWillCounter", (e) => {
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> will counter <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span> with: <span class="counter ${e.counter}">${e.counter}</span>.`,
+                    actionMessage: true
                 });
             });
 
