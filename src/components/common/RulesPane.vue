@@ -6,7 +6,7 @@
                 <br><br>
                 After an action has been taken, if applicable other players will be allowed challege or allow the action, or take a counteraction (which can also be challenged or allowed). Challenges on the action are resolved before counteractions.
                 <br><br>
-                If a challenge occurs, then the challenged player must reveal an influence. If it is the correct influence for the action/counteraction then it will be exchanged with the deck for a new one, otherwise it will be discarded and the action/counteraction will continue as appropriate.
+                If a challenge occurs, then the challenged player must reveal an influence. If it is the correct influence for the action/counteraction then it will be exchanged with the deck for a new one and the challenger will lose an influence and the action/counteraction will continue as appropriate, otherwise it will be discarded and the action will not continue.
                 <br><br>
                 Players are out of the game when they have no more influence remaining.
             </small>
