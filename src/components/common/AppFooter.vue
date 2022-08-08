@@ -5,6 +5,7 @@
             <p class="text-muted">
                 <small>
                     <a href="https://github.com/shanemcc/coup-client">coup-client{{ $appConfig.gitVersion != 'Unknown' ? ' v' + $appConfig.gitVersion : ''}}</a>
+                    - <a href="https://github.com/shanemcc/coup-server">coup-server{{ serverVersion != 'Unknown' ? ' v' + serverVersion : ''}}</a>
                     <br>
                     &copy; Shane 'Dataforce' Mc Cormack
                 </small>
@@ -15,7 +16,27 @@
 
 <script>
 export default {
-    inject: ['$appConfig'],
+    inject: ['$appConfig', '$ioSocket'],
+
+    data() {
+        return {
+            serverVersion: 'Unknown',
+        }
+    },
+
+    created() {
+        this.$ioSocket.on("clientConnected", this.handleClientConnected);
+    },
+
+    unmounted() {
+        this.$ioSocket.off("clientConnected", this.handleClientConnected);
+    },
+
+    methods: {
+        handleClientConnected(args) {
+            this.serverVersion = args.serverVersion ? args.serverVersion : 'Unknown';
+        },
+    }
 }
 </script>
 
