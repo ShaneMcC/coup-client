@@ -3,22 +3,20 @@
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage" @connect="connect" v-model:adminToken="adminToken">
         </ConnectingPane>
 
-        <div v-if="connected">
-            <button @click="logout" class="btn btn-warning">Admin log out</button>
-            <br><br>
-
-            <AdminPane :adminSocket="$ioSocket">
-            </AdminPane>
-        </div>
+        <GameAdminPane v-if="connected" :adminSocket="$ioSocket" :gameID="gameID">
+        </GameAdminPane>
     </div>
 </template>
 
 <script>
 import ConnectingPane from "../components/admin/ConnectingPane.vue";
-import AdminPane from "../components/admin/AdminPane.vue";
+import GameAdminPane from "../components/game/GameAdminPane.vue";
 
 export default {
     inject: ["$ioManager"],
+
+    props: ['gameID'],
+
     data() {
         return {
             connectErrorMessage: "",
@@ -28,11 +26,7 @@ export default {
                 return localStorage.getItem('adminToken') || '';
             },
             set adminToken(value) {
-                if (value == undefined) {
-                    localStorage.removeItem('adminToken');
-                } else {
-                    localStorage.setItem('adminToken', value);
-                }
+                localStorage.setItem('adminToken', value);
             }
         };
     },
@@ -71,8 +65,6 @@ export default {
         handleConnect() {
             this.reset();
             this.connected = true;
-
-            localStorage.setItem('isAdmin', true);
         },
 
         handleConnectError(err) {
@@ -83,12 +75,6 @@ export default {
             this.reset();
         },
 
-        logout() {
-            localStorage.removeItem('isAdmin');
-            this.adminToken = undefined;
-            this.disconnect();
-        },
-
         reset() {
             this.connected = false;
             this.connectErrorMessage = "";
@@ -96,7 +82,7 @@ export default {
     },
 
 
-    components: { ConnectingPane, AdminPane }
+    components: { ConnectingPane, GameAdminPane }
 }
 </script>
 

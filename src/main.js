@@ -23,4 +23,4 @@ fetch('/config.json').then(async (result) => {
 
 
 // eslint-disable-next-line
-import { _Boostrap } from 'bootstrap'
+import { _Bootstrap } from 'bootstrap'

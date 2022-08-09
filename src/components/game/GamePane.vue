@@ -13,6 +13,23 @@
         </div>
 
         <div v-if="gameLoaded">
+            <div v-if="isAdmin">
+                <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#adminCanvas" role="button" aria-controls="adminCanvas">
+                    Admin Panel
+                </a>
+
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="adminCanvas" aria-labelledby="adminCanvasLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="adminCanvasLabel">Game Admin</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <GameAdminPage :gameID="myGameID"></GameAdminPage>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
             <div v-if="players[myPlayerID]">
                 We are playing as <strong>{{ players[myPlayerID].name }}</strong>
                 <!-- 
@@ -69,6 +86,20 @@
                 <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#cheatSheetModal">
                     Show Cheat Sheet
                 </button>
+
+                <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <RulesPane></RulesPane>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="actions" v-if="players[myPlayerID]">
@@ -90,14 +121,14 @@
                 <ul v-if="showGameLog">
                     <li v-for="(log, id) in gameLog" :key="id" class="event" :class="log.event.__type">
                         [<span class="date" v-html="new Date(log.date).toLocaleTimeString()"></span>]
-                        <span class="date" v-html="log.message"></span>
+                        <span class="logmessage" v-html="log.message"></span>
                         <br v-if="log.separator">
                         <br v-if="log.separator">
                     </li>
                 </ul>
             </div>
 
-            <div class="gameEvents" v-if="!$appConfig.isProduction">
+            <div class="gameEvents" v-if="isAdmin || !$appConfig.isProduction">
                 Game Events
                 <button class="btn btn-sm btn-primary" v-if="!showEvents" @click="showEvents = true">Show</button>
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
@@ -105,20 +136,6 @@
                 <ul v-if="showEvents">
                     <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">{{ displayEvent(event) }}</li>
                 </ul>
-            </div>
-        </div>
-
-        <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <RulesPane></RulesPane>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -129,6 +146,9 @@ import emitter from 'tiny-emitter'
 import PlayerPanel from './PlayerPanel.vue';
 import ActionPanel from './ActionPanel.vue';
 import RulesPane from '../common/RulesPane.vue';
+import GameAdminPage from '@/views/GameAdminPage.vue';
+
+import { Modal, Offcanvas } from 'bootstrap'
 
 export default {
     inject: ["$ioSocket", "$appConfig"],
@@ -153,6 +173,10 @@ export default {
             chatMessage: '',
             activePlayer: '',
             deck: [],
+
+            get isAdmin() {
+                return localStorage.getItem('isAdmin') || false;
+            },
         };
     },
 
@@ -185,6 +209,18 @@ export default {
 
         this.$ioSocket.on("handleGameEvent", this.handleEvent);
         this.$ioSocket.on("gameLoaded", this.handleGameLoaded);
+    },
+
+    beforeUnmount() {
+        var cheatSheetModal = Modal.getInstance(document.getElementById('cheatSheetModal'));
+        if (cheatSheetModal) {
+            cheatSheetModal.hide();
+        }
+
+        var adminCanvas = Offcanvas.getInstance(document.getElementById('adminCanvas'));
+        if (adminCanvas) {
+            adminCanvas.hide();
+        }
     },
 
     unmounted() {
@@ -703,7 +739,7 @@ export default {
             });
         }
     },
-    components: { PlayerPanel, ActionPanel, RulesPane }
+    components: { PlayerPanel, ActionPanel, RulesPane, GameAdminPage }
 }
 </script>
 

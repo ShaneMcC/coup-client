@@ -51,6 +51,10 @@ html.dark-theme {
     }
   }
 
+  .offcanvas {
+    background-color: #373737;
+  }
+
   .modal-content {
     background-color: #373737;
   }
@@ -63,7 +67,7 @@ html.dark-theme {
 
 <style lang="scss">
 // @import '~bootstrap/dist/css/bootstrap.css';
-@import "~bootstrap/scss/bootstrap";
+  @import "~bootstrap/scss/bootstrap";
 </style>
 
 <style lang="scss">
@@ -89,7 +93,9 @@ html {
     color: $color;
   }
 
-  button.#{$influence}, a.#{$influence} {
+  button.#{$influence},
+  a.#{$influence} {
+
     &:hover,
     &:active {
       background-color: #{mix($highlightColour, $background-color, $highlightPercentage)};

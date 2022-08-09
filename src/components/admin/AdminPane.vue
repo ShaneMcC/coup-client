@@ -105,7 +105,7 @@
 
         <h1>Saved Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
         <div class="gameList savedGames">
-            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game" :class="{loaded: knownGames[gameID] != undefined}">
+            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game" :class="{ loaded: knownGames[gameID] != undefined }">
                 <h2>{{ gameID }}</h2>
                 <div class="actions">
                     <button :disabled="knownGames[gameID]" class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
