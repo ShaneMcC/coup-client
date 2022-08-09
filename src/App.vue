@@ -67,7 +67,7 @@ html.dark-theme {
 
 <style lang="scss">
 // @import '~bootstrap/dist/css/bootstrap.css';
-  @import "~bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 </style>
 
 <style lang="scss">

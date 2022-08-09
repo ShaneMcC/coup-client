@@ -1,6 +1,6 @@
 <template>
     <div>
-        Game Admin for: {{ gameID }} <button class="btn btm-sm btn-success" @click="refresh">Refresh</button>
+        <button class="btn btm-sm btn-success" @click="refresh">Refresh Game State</button>
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
         <hr>
         <div class="actions">
@@ -45,8 +45,11 @@
                     </li>
                 </ul>
 
-                <button class="btn btn-danger" @click="rollbackEvent()">&lt;&lt; Rollback Event</button>
-                <button v-if="game.started" class="btn btn-primary" @click="nextPlayerTurn()">Next Turn &gt;&gt;</button>
+                <div class="actions">
+                    <button class="btn btn-danger" @click="rollbackEvent()">&lt;&lt; Rollback Events</button>
+                    <button class="btn btn-danger" @click="rollbackUntil()">&lt;&lt; Rollback Until</button>
+                    <button v-if="game.started" class="btn btn-primary" @click="nextPlayerTurn()">Next Turn &gt;&gt;</button>
+                </div>
             </div>
 
             <div>
@@ -158,6 +161,10 @@ export default {
             this.$ioSocket.emit("startPlayerTurn", this.gameID, playerID);
         },
 
+        adminPlayerAction(playerID, action, target) {
+            this.$ioSocket.emit("adminAction", this.gameID, playerID, action, target);
+        },
+
         rollbackEvent(count) {
             if (count == undefined) {
                 count = prompt('Events to rollback:');
@@ -168,9 +175,19 @@ export default {
 
             count = parseInt(count);
             if (count > 0) {
-                this.$ioSocket.emit("rollbackLastEvent", this.gameID, count);
+                this.$ioSocket.emit("rollbackEvents", this.gameID, count);
             }
         },
+
+        rollbackUntil() {
+            const until = prompt('Rollback to time:');
+            if (until == undefined) {
+                return;
+            }
+
+            this.$ioSocket.emit("rollbackUntil", this.gameID, until);
+        },
+
 
         reloadGame() {
             this.$ioSocket.emit("reloadGame", this.gameID);
