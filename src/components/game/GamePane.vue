@@ -15,10 +15,10 @@
         <div v-if="gameLoaded">
             <div v-if="isAdmin">
                 <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#adminCanvas" role="button" aria-controls="adminCanvas">
-                    Admin Panel
+                    Game Admin
                 </a>
 
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="adminCanvas" aria-labelledby="adminCanvasLabel">
+                <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="adminCanvas" aria-labelledby="adminCanvasLabel">
                     <div class="offcanvas-header">
                         <h5 class="offcanvas-title" id="adminCanvasLabel">Game Admin</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -798,6 +798,15 @@ li.event {
             }
         }
     }
+}
+
+.offcanvas {
+    background-color: #ededed;
+    html.dark-theme & {
+        background-color: #1d1d1d;
+    }
+
+    width: 800px;
 }
 </style>
 

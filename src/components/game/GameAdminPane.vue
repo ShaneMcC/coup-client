@@ -46,7 +46,7 @@
                 </ul>
 
                 <button class="btn btn-danger" @click="rollbackEvent()">&lt;&lt; Rollback Event</button>
-                <button class="btn btn-primary" @click="nextPlayerTurn()">Next Turn &gt;&gt;</button>
+                <button v-if="game.started" class="btn btn-primary" @click="nextPlayerTurn()">Next Turn &gt;&gt;</button>
             </div>
 
             <div>
