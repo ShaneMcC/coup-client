@@ -179,10 +179,19 @@ export default {
             }
         },
 
-        rollbackUntil() {
-            const until = prompt('Rollback to time:');
+        rollbackUntil(until) {
             if (until == undefined) {
-                return;
+                const until = prompt('Rollback to time:');
+                if (until == undefined) {
+                    return;
+                }
+            }
+
+            if (!(until instanceof Date)) {
+                until = new Date(until);
+                if (isNaN(until)) {
+                    return;
+                }
             }
 
             this.$ioSocket.emit("rollbackUntil", this.gameID, until);

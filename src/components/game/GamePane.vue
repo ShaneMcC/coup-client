@@ -24,7 +24,7 @@
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <GameAdminPage :gameID="myGameID"></GameAdminPage>
+                        <GameAdminPage ref="adminPanel" :gameID="myGameID"></GameAdminPage>
                     </div>
                 </div>
                 <hr>
@@ -134,7 +134,10 @@
                 <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
 
                 <ul v-if="showEvents">
-                    <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">{{ displayEvent(event) }}</li>
+                    <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">
+                        <span v-if="isAdmin">[<a href="#" @click.prevent="rollbackUntil(event.date)">&lt;&lt;R</a>] </span>
+                        {{ displayEvent(event) }}
+                    </li>
                 </ul>
             </div>
         </div>
@@ -290,6 +293,10 @@ export default {
             if (logItem.actionMessage) {
                 this.actionsMessage = logItem.message;
             }
+        },
+
+        rollbackUntil(date) {
+            this.$refs.adminPanel.rollbackUntil(date);
         },
 
         addInternalHandlers() {

@@ -3,7 +3,7 @@
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage" @connect="connect" v-model:adminToken="adminToken">
         </ConnectingPane>
 
-        <GameAdminPane v-if="connected" :adminSocket="$ioSocket" :gameID="gameID">
+        <GameAdminPane ref="adminPane" v-if="connected" :adminSocket="$ioSocket" :gameID="gameID">
         </GameAdminPane>
     </div>
 </template>
@@ -78,6 +78,10 @@ export default {
         reset() {
             this.connected = false;
             this.connectErrorMessage = "";
+        },
+
+        rollbackUntil(date) {
+            this.$refs.adminPane?.rollbackUntil(date);
         },
     },
 
