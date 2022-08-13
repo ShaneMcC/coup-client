@@ -135,7 +135,8 @@
 
                 <ul v-if="showEvents">
                     <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">
-                        <span v-if="isAdmin">[<a href="#" @click.prevent="rollbackUntil(event.date)">&lt;&lt;R</a>] </span>
+                        <span v-if="isAdmin && event.__type != 'showActions'">[<a href="#" @click.prevent="rollbackUntil(event.date)">&lt;&lt;R</a>] </span>
+                        <span v-if="isAdmin && event.__type == 'showActions'">[&nbsp;&nbsp;&nbsp;] </span>
                         {{ displayEvent(event) }}
                     </li>
                 </ul>
