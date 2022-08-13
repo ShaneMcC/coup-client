@@ -6,10 +6,13 @@
 
         <ul v-if="showGameLog">
             <li v-for="(log, id) in gameLog" :key="id" class="event" :class="log.event.__type">
-                [<span class="date" v-html="new Date(log.date).toLocaleTimeString()"></span>]
-                <span class="logmessage" v-html="log.message"></span>
-                <br v-if="log.separator">
-                <br v-if="log.separator">
+                <span class="logdata">
+                    [<span class="date" v-html="new Date(log.date).toLocaleTimeString()"></span>]
+                    <span class="logmessage" v-html="log.message"></span>
+                </span>
+                <div class="logSeparator" v-if="log.separator">
+                    <hr>
+                </div>
             </li>
         </ul>
     </div>
@@ -472,7 +475,7 @@ export default {
             this.$events.on("chatMessage", (e) => {
                 const playerName = this.htmlEntities(this.players[e.player].name);
                 const message = this.htmlEntities(e.message);
-                
+
                 this.addToGameLog({
                     date: e.date,
                     event: e,
@@ -522,6 +525,16 @@ li.event {
 @import '@/assets/_variables.scss';
 
 .gameLog {
+    ul {
+        list-style-type: none;
+        padding: 20px;
+    }
+
+    .logSeparator {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
     /*
     color: grey;
 
