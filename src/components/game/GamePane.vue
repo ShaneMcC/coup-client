@@ -113,7 +113,7 @@
                 </form>
             </div>
 
-            <GameLog ref="gameLog" :initialEvents="initialEvents" v-model:actionsMessage="actionsMessage"></GameLog>
+            <GameLog ref="gameLog" @ready="gameLogReady" @setActionsMessage="(e) => actionsMessage = e"></GameLog>
 
             <div class="gameEvents" v-if="isAdmin || !$appConfig.isProduction">
                 Game Events
@@ -221,6 +221,14 @@ export default {
     },
 
     methods: {
+        gameLogReady() {
+            if (this.$refs.gameLog) {
+                for (const event of this.initialEvents) {
+                    this.$refs.gameLog.handleEvent(event);
+                }
+            }
+        },
+
         handleGameLoaded() {
             this.gameLoaded = true;
         },
