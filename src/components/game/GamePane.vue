@@ -578,14 +578,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> performed action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -596,14 +596,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -614,14 +614,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is continuing with action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -632,14 +632,14 @@ export default {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> on <span class="target">${this.htmlEntities(this.players[e.target].name)}</span>`,
                         actionMessage: true
                     });
                 } else {
                     this.addToGameLog({
                         date: e.date,
                         event: e,
-                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.action}</span>`,
+                        message: `<span class="player">${this.htmlEntities(this.players[e.player].name)}</span> is attempting action <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>`,
                         actionMessage: true
                     });
                 }
@@ -657,7 +657,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> will counter <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span> with: <span class="counter ${e.counter}">${e.counter}</span>.`,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> will counter <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>.`,
                     actionMessage: true
                 });
             });
@@ -666,7 +666,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> countered <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span> with: <span class="counter ${e.counter}">${e.counter}</span>.`,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> countered <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>.`,
                     actionMessage: true
                 });
             });
@@ -675,7 +675,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> challenged <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.action}</span>.`,
+                    message: `<span class="challenger">${this.htmlEntities(this.players[e.challenger].name)}</span> challenged <span class="player">${this.htmlEntities(this.players[e.player].name)}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>.`,
                     actionMessage: true
                 });
             });
