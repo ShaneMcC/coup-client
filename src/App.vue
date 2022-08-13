@@ -1,8 +1,8 @@
 <template>
   <div>
-    <app-header></app-header>
+    <app-header id="appHeader"></app-header>
 
-    <div class="container-fluid">
+    <div id="appContent" class="container-fluid">
       <div class="row">
         <main class="col-sm-12 pt-3">
           <router-view></router-view>
@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <app-footer></app-footer>
+    <app-footer id="appFooter"></app-footer>
 
   </div>
 </template>
@@ -40,34 +40,46 @@ html {
 }
 
 html.dark-theme {
+  .text-reset {
+    color: white !important;
+  }
+
   body {
     background-color: #373737;
-    color: white;
 
-    a,
-    a:focus,
-    a:hover {
-      color: #fff
+    .offcanvas,
+    .modal-content {
+      background-color: #373737;
     }
-  }
 
-  .offcanvas {
-    background-color: #373737;
-  }
+    .offcanvas-header,
+    .modal-header {
+      .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+      }
+    }
 
-  .modal-content {
-    background-color: #373737;
-  }
+    .table {
+      color: white;
+    }
 
-  .table {
-    color: white;
+    #appContent,
+    #appFooter {
+      color: white;
+
+      a,
+      a:focus,
+      a:hover {
+        color: #fff
+      }
+    }
   }
 }
 </style>
 
 <style lang="scss">
-// @import '~bootstrap/dist/css/bootstrap.css';
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/dist/css/bootstrap.css';
+// @import "~bootstrap/scss/bootstrap";
 </style>
 
 <style lang="scss">
