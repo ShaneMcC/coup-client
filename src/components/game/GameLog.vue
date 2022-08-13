@@ -176,7 +176,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `Game over. <span class="player">${winnerName}</span> was the winner.`,
+                    message: `Game over. <span class="player">${winnerName}</span> was the winner`,
                     actionMessage: true
                 });
             });
@@ -196,7 +196,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `Game started.`,
+                    message: `Game started`,
                     actionMessage: true,
                     separator: true
                 });
@@ -284,6 +284,16 @@ export default {
             this.$events.on("returnKnownInfluenceToDeck", returnInfluenceHandler);
 
 
+            this.$events.on("playerOutOfInfluence", (e) => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> has no more influence remaining and is out of the game`,
+                });
+            });
+
             this.$events.on("beginPlayerTurn", (e) => {
                 const playerName = this.htmlEntities(this.players[e.player].name);
                 this.turnLog = [];
@@ -291,7 +301,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> started their turn.`,
+                    message: `<span class="player">${playerName}</span> started their turn`,
                     actionMessage: true,
                     separator: true,
                 });
@@ -387,7 +397,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> is not challenging the action.`
+                    message: `<span class="player">${playerName}</span> is not challenging the action`
                 });
             });
 
@@ -398,7 +408,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${challengerName}</span> will counter <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>.`,
+                    message: `<span class="challenger">${challengerName}</span> will counter <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>`,
                     actionMessage: true
                 });
             });
@@ -410,7 +420,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${challengerName}</span> countered <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>.`,
+                    message: `<span class="challenger">${challengerName}</span> countered <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span> with: <span class="counter ${e.counter}">${e.counterName ? e.counterName : e.counter}</span>`,
                     actionMessage: true
                 });
             });
@@ -422,7 +432,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="challenger">${challengerName}</span> challenged <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>.`,
+                    message: `<span class="challenger">${challengerName}</span> challenged <span class="player">${playerName}</span>'s <span class="action ${e.action}">${e.actionName ? e.actionName : e.action}</span>`,
                     actionMessage: true
                 });
             });
@@ -433,7 +443,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> passed the challenge by revealing <span class="influence ${e.influence}">${e.influence}</span>.`
+                    message: `<span class="player">${playerName}</span> passed the challenge by revealing <span class="influence ${e.influence}">${e.influence}</span>`
                 });
             });
 
@@ -443,7 +453,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> failed the challenge by revealing <span class="influence ${e.influence}">${e.influence}</span>.`
+                    message: `<span class="player">${playerName}</span> failed the challenge by revealing <span class="influence ${e.influence}">${e.influence}</span>`
                 });
             });
 
@@ -455,7 +465,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> must discard <span class="count">${count}</span> influence (Reason: <span class="reason">${reason}</span>).`,
+                    message: `<span class="player">${playerName}</span> must discard <span class="count">${count}</span> influence (Reason: <span class="reason">${reason}</span>)`,
                     actionMessage: true
                 });
             });
@@ -467,7 +477,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> is exchanging <span class="count">${count}</span> cards with the deck.`,
+                    message: `<span class="player">${playerName}</span> is exchanging <span class="count">${count}</span> cards with the deck`,
                     actionMessage: true
                 });
             });
