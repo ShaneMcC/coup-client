@@ -70,12 +70,10 @@
                     <router-link :to="'/game/' + gameID">{{ gameID }}</router-link>
                 </h2>
                 <div class="actions">
-                    <button class="btn btn-sm btn-warning" @click="endGame(gameID)">End Game</button>
                     <button class="btn btn-sm btn-success" @click="saveGame(gameID)">Save Game</button>
                     <button class="btn btn-sm btn-primary" @click="refreshGame(gameID)">Refresh Game</button>
                     <button class="btn btn-sm btn-danger" @click="killGame(gameID)">Kill Game</button>
                     <button class="btn btn-sm btn-info" @click="collectGameEvents(gameID)">Collect Events</button>
-                    <button class="btn btn-sm btn-secondary" @click="adminEmitEvent(gameID)">Emit Event</button>
                     <button class="btn btn-sm btn-secondary" @click="sendAdminMessage(gameID)">Send Message</button>
                 </div>
 
@@ -332,7 +330,7 @@ export default {
     border: 1px solid grey;
     margin: 10px;
     display: inline-block;
-    max-width: 500px;
+    width: 500px;
     background-color: rgb(32, 96, 32);
 
     &.NewGameState {
