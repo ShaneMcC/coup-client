@@ -149,6 +149,10 @@ export default {
     &.ready {
       border: 4px solid green;
       background-color: white;
+
+      html.dark-theme & {
+        background-color: lightgrey;
+      }
     }
 
     &.active {
@@ -158,15 +162,12 @@ export default {
     &.dead {
       border: 4px solid red;
       background-color: lightcoral;
+
+      html.dark-theme & {
+        background-color: lightcoral;
+      }
     }
   }
 }
 
-html.dark-theme {
-  .player {
-    &.ready {
-      background-color: lightgrey;
-    }
-  }
-}
 </style>
