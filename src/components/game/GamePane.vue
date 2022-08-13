@@ -156,7 +156,7 @@ import { Modal, Offcanvas } from 'bootstrap'
 export default {
     inject: ["$ioSocket", "$appConfig"],
 
-    props: ["myGameID", "initialEvents"],
+    props: ["myGameID", "originalPlayerID", "initialEvents"],
 
     data() {
         return {
@@ -172,7 +172,7 @@ export default {
             showGameLog: true,
             availableActions: {},
             players: {},
-            myPlayerID: '',
+            myPlayerID: this.originalPlayerID,
             chatMessage: '',
             activePlayer: '',
             deck: [],

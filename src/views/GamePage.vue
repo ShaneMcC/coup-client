@@ -9,7 +9,7 @@
             <PreGamePane v-if="connected && !gameStarted && (myPlayerID == undefined)" :showSpectateButton="!inGame" v-model:playerName="playerName" :gameID="myGameID">
             </PreGamePane>
 
-            <GamePane :key="myGameID + '/' + myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :initialEvents="gameEvents">
+            <GamePane :key="myGameID + '/' + myPlayerID" v-if="connected && inGame" :myGameID="myGameID" :originalPlayerID="myPlayerID" :initialEvents="gameEvents">
             </GamePane>
         </div>
 
