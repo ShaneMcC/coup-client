@@ -251,12 +251,12 @@ export default {
 
             this.$events.on("allocateNextInfluence", (e) => {
                 const playerName = this.htmlEntities(this.players[e.player].name);
-                e.influence = this.deck.shift();
+                const influence = this.deck.shift();
 
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `<span class="player">${playerName}</span> was allocated the next influence in the deck: <span class="influence ${e.influence}">${e.influence}</span>`
+                    message: `<span class="player">${playerName}</span> was allocated the next influence in the deck: <span class="influence ${influence}">${influence}</span>`
                 });
             });
 
