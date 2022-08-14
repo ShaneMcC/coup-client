@@ -38,6 +38,7 @@
                     <li v-for="(player, playerID) in game.players" :key="playerID" class="player">
                         <router-link :to="'/game/' + gameID + '/' + playerID">{{ player.name }}</router-link>
                         <div v-if="game.started" class="actions">
+                            <button class="btn btn-sm btn-danger" @click="removePlayer(playerID)">X</button>
                             <button class="btn btn-sm btn-danger" @click="removeCoins(playerID)">-$</button>
                             <button class="btn btn-sm btn-success" @click="giveCoins(playerID)">+$</button>
                             <button class="btn btn-sm btn-primary" @click="startPlayerTurn(playerID)">&gt;&gt;</button>
@@ -127,6 +128,10 @@ export default {
 
         nextPlayerTurn() {
             this.$ioSocket.emit("nextPlayerTurn", this.gameID);
+        },
+
+        removePlayer(playerID) {
+            this.$ioSocket.emit("removePlayer", this.gameID, playerID);
         },
 
         removeCoins(playerID, count) {
