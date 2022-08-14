@@ -31,13 +31,13 @@
             </div>
 
             <div v-if="players[myPlayerID]">
-                We are playing as <strong>{{ players[myPlayerID].name }}</strong>
+                You are playing as <strong>{{ players[myPlayerID].name }}</strong>
                 <!-- 
                     TODO: A thing for people to copy the URL without their UUID.
                 -->
             </div>
             <div v-else>
-                We are spectating.
+                You are spectating.
             </div>
 
             <div class="players">
