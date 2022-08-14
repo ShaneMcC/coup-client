@@ -14,8 +14,8 @@
         </div>
 
         <div v-if="!gameExists && gameStateKnown">
-            <strong>Error:</strong> Game does not exist
-
+            <strong>Error:</strong> {{ gameStateReason }}
+            <br><br>
             <button v-if="connected" class="btn btn-sm btn-success" @click="checkExists">Retry</button>
         </div>
     </div>
@@ -34,6 +34,7 @@ export default {
     data() {
         return {
             connectErrorMessage: '',
+            gameStateReason: 'Game was not found on the server',
 
             connected: false,
             inGame: false,
@@ -172,6 +173,7 @@ export default {
                 this.reset();
                 this.connected = true;
                 this.gameStateKnown = true;
+                this.gameStateReason = 'Game was closed by the server'
             }
         },
 

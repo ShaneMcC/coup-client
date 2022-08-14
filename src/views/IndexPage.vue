@@ -1,32 +1,63 @@
 <template>
-    <div>
+    <div class="container text-center">
         <AlertsPane @removeAlert="removeAlert" :alerts="alerts"></AlertsPane>
+
+        <h1>Welcome to Coup Online</h1>
+
+        <div class="blurb">
+            <p>
+                This website will allow you to play the social deduction game <a href="https://board-games-galore.fandom.com/wiki/Coup">Coup</a>
+                with up to 10 people.
+                <br>
+                <small>
+                    (For 7/8 people, 1 extra copy of each card is added to the game, with 9/10 2 extra copies are added.)
+                </small>
+            </p>
+            <p>
+                It is primarily designed for play with friends while on voice chat (such as Discord), but also can be played with just the
+                in-game chat features, or in person with all players playing on mobile.
+            </p>
+            <p>
+                All the core game rules are implemented and should be fully accurate, but if there are any bugs or issues then you can contact
+                <strong>Dataforce</strong> on Quakenet IRC, <strong>Dataforce#4726</strong> on Discord,
+                <a href="https://github.com/ShaneMcC/coup-server/issues/new">raise an issue</a> on github, or drop me an
+                <a href="mailto:coupgame@dataforce.org.uk">email</a>.
+            </p>
+        </div>
+
+        <hr>
 
         <ConnectingPane v-if="!connected" :connectErrorMessage="connectErrorMessage">
         </ConnectingPane>
 
         <div v-if="connected">
             <div v-if="gameCreationEnabled">
-                <button class="btn btn-sm btn-success" @click="createGame">Create new Game</button>
+                <h2>Create a new game</h2>
+                <button class="btn btn-sm btn-success" @click="createGame">Create Game</button>
                 <hr>
             </div>
 
+            <h2>Join an existing game</h2>
             <form class="form" @submit.prevent="joinGame">
-                <div class="d-flex flex-row align-items-center flex-wrap">
-                    <label for="joinGameID">Game ID:</label>
-                    <input id="joinGameID" class="form-control w-auto mx-2" v-model="joinGameId">
+                <div class="d-flex flex-row align-items-center flex-wrap justify-content-center">
+                    <label for="joinGameID" class="mt-2">Game ID:</label>
+                    <input id="joinGameID" class="form-control w-auto mx-2 mt-2" v-model="joinGameId">
 
-                    <button class="btn btn-sm btn-primary" type="submit">Join Existing Game</button>
+                    <button class="btn btn-sm btn-primary mt-2" type="submit">Join Game</button>
                 </div>
             </form>
-
         </div>
+
+        <hr>
+        <h2>Rules and Gameplay</h2>
+        <RulesPane></RulesPane>
     </div>
 </template>
 
 <script>
 import ConnectingPane from "@/components/common/ConnectingPane.vue";
 import AlertsPane from "@/components/common/AlertsPane.vue";
+import RulesPane from "@/components/common/RulesPane.vue";
 
 export default {
     inject: ["$ioSocket"],
@@ -110,7 +141,7 @@ export default {
         }
     },
 
-    components: { ConnectingPane, AlertsPane }
+    components: { ConnectingPane, AlertsPane, RulesPane }
 }
 </script>
 

@@ -13,7 +13,10 @@
         </div>
 
         <div v-if="gameLoaded">
-            <div v-if="isAdmin">
+            <div v-if="isAdmin" class="gameAdmin">
+                <div v-if="false">
+                    <!-- TODO: I'd prefer this was a menu item not a button, but this works for now. -->
+                </div>
                 <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#adminCanvas" role="button" aria-controls="adminCanvas">
                     Game Admin
                 </a>
@@ -27,16 +30,12 @@
                         <GameAdminPage ref="adminPanel" :gameID="myGameID"></GameAdminPage>
                     </div>
                 </div>
-                <hr>
             </div>
 
-            <div v-if="players[myPlayerID]">
+            <div v-if="players[myPlayerID]" class="viewerDetails">
                 You are playing as <strong>{{ players[myPlayerID].name }}</strong>
-                <!-- 
-                    TODO: A thing for people to copy the URL without their UUID.
-                -->
             </div>
-            <div v-else>
+            <div v-else class="viewerDetails">
                 You are spectating
             </div>
 
@@ -429,6 +428,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.gameAdmin {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid lightgray;
+}
+
 .players,
 .actions,
 .gameLog,

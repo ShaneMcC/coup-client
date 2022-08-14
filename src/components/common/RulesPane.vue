@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="text-center">
-            <small>
+            <div class="gameRules">
                 During your turn you can take exactly 1 action from the below list. You must coup if you have 10 or more coins.
                 <br><br>
                 After an action has been taken, if applicable other players will be allowed challege or allow the action, or take a counteraction (which can also be challenged or allowed). Challenges on the action are resolved before counteractions.
@@ -9,7 +9,7 @@
                 If a challenge occurs, then the challenged player must reveal an influence. If it is the correct influence for the action/counteraction then it will be exchanged with the deck for a new one and the challenger will lose an influence and the action/counteraction will continue as appropriate, otherwise it will be discarded and the action will not continue.
                 <br><br>
                 Players are out of the game when they have no more influence remaining.
-            </small>
+            </div>
         </div>
         <hr>
         <div style="max-width: 100%; overflow-x: auto;">
@@ -93,3 +93,9 @@
         </div>
     </div>
 </template>
+
+<style scoped lang="scss">
+div.modal-content div.gameRules {
+    font-size: 0.875em;
+}
+</style>
