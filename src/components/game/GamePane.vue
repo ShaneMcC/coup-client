@@ -37,7 +37,7 @@
                 -->
             </div>
             <div v-else>
-                You are spectating.
+                You are spectating
             </div>
 
             <div class="players">
