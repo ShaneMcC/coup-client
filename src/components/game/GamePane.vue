@@ -303,7 +303,7 @@ export default {
                     "influence": [],
                     "discardedInfluence": [],
                     "ready": false,
-                    "actions": { 'KICK': { name: 'Kick' } }
+                    "actions": { 'KICK': { name: 'Kick', confirm: 'Are you sure you want to kick this player?', classes: ["btn-danger"] } }
                 };
 
                 if (e.self) {

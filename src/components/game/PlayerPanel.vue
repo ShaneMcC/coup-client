@@ -25,7 +25,7 @@
 
       <div class="actions" v-if="self != undefined">
         <span v-for="(action, actionID) in player.actions" :key="actionID">
-          <button class="btn btm-sm btn-primary" @click="doPlayerAction(actionID)">{{ action.name }}</button>
+          <button class="btn btm-sm btn-primary" :class="action.classes" @click="doPlayerAction(actionID)">{{ action.name }}</button>
         </span>
       </div>
     </div>
@@ -41,7 +41,11 @@ export default {
 
   methods: {
     doPlayerAction(action) {
-      if (this.player.actions[action].prompt) {
+      if (this.player.actions[action].confirm) {
+        if (confirm(this.player.actions[action].confirm)) {
+          this.$ioSocket.emit("action", this.game, action, this.player.id);
+        }
+      } else if (this.player.actions[action].prompt) {
         var val = prompt(this.player.actions[action].prompt);
         if (val != undefined) {
           this.$ioSocket.emit("action", this.game, action, val);

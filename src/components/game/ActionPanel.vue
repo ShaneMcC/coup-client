@@ -1,6 +1,6 @@
 <template>
     <span>
-        <button class="btn btn-dark" :class="classes" :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins)" @click="doAction()">{{ action.name }}</button>
+        <button class="btn btn-dark" :class="classes" :disabled="(action.requiredCoins && action.requiredCoins > players[myPlayerID].coins) || action.disabled" @click="doAction()">{{ action.name }}</button>
     </span>
 </template>
 
@@ -14,7 +14,7 @@ export default {
     computed: {
         classes() {
             const classes = [];
-            
+
             if (this.action.classes) {
                 for (const c of this.action.classes) {
                     classes.push(c);
@@ -37,13 +37,17 @@ export default {
         doAction() {
             var actionName = this.action.action ? this.action.action : this.actionID;
 
-            if (this.action.prompt) {
+            if (this.action.confirm) {
+                if (confirm(this.action.confirm)) {
+                    this.$ioSocket.emit("action", this.myGameID, actionName, val);
+                }
+            } else if (this.action.prompt) {
                 var val = prompt(this.action.prompt);
 
-                // TODO: This shouldn't be here.
-                if (actionName == 'SETNAME') { localStorage.setItem('playerName', val); }
+                if (val != undefined && val != null) {
+                    // TODO: This probably shouldn't be here.
+                    if (actionName == 'SETNAME') { localStorage.setItem('playerName', val); }
 
-                if (val != undefined) {
                     this.$ioSocket.emit("action", this.myGameID, actionName, val);
                 }
             } else if (this.action.options) {
