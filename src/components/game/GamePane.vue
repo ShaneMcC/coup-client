@@ -460,7 +460,7 @@ export default {
 
             this.$events.on("playerActionStillCounterable", (e) => {
                 this.waitingFor = {};
-                for (const pid in e.players) {
+                for (const pid of e.players) {
                     this.waitingFor[pid] = this.players[pid].name;
                 }
             });
@@ -472,8 +472,6 @@ export default {
                         this.waitingFor[pid] = player.name;
                     }
                 }
-
-                console.log(this.waitingFor);
             });
 
             this.$events.on("playerPassed", (e) => {
