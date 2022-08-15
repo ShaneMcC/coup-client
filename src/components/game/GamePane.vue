@@ -78,7 +78,7 @@
                 <strong v-html="actionsMessage"></strong>
                 <br>
                 <button v-if="!nextGameID" class="btn btn-success" @click="getNextGame">Create Next Game</button>
-                <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game</button>
+                <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game: {{ nextGameID }}</button>
             </div>
 
             <div class="actions">
