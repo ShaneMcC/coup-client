@@ -113,7 +113,7 @@ export default {
             });
 
             this.$events.on("removePlayer", (e) => {
-                const playerName = this.htmlEntities(this.players[e.player].name);
+                const playerName = this.htmlEntities(this.players[e.id].name);
                 const kickedByName = this.htmlEntities(this.players[e.kickedBy]?.name);
                 const reason = this.htmlEntities(e.reason);
 
