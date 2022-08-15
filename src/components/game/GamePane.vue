@@ -392,6 +392,10 @@ export default {
                 this.deck = [...e.deck];
             });
 
+            this.$events.on("showDeck", (e) => {
+                this.deck = [...e.deck];
+            });
+
             this.$events.on("allocateInfluence", (e) => {
                 this.players[e.player].influence.push(e.influence);
                 // TODO: This should probably splice out the correct influence.
