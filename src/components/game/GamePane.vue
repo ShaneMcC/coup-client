@@ -63,6 +63,9 @@
 
                 <div class="actions" v-if="!gameOver && players[myPlayerID]">
                     <strong v-html="actionsMessage"></strong>
+                    <div v-if="Object.keys(waitingFor).length > 0">
+                        <strong>Waiting for response from:</strong> {{ Object.values(waitingFor).join(', ') }}
+                    </div>
                     <br>
                     Available Actions:
 
@@ -165,6 +168,7 @@ export default {
             chatMessage: '',
             activePlayer: '',
             deck: [],
+            waitingFor: {},
 
             get isAdmin() {
                 return localStorage.getItem('isAdmin') || false;
@@ -430,6 +434,60 @@ export default {
             this.$events.on("showPlayerInfluence", (e) => {
                 this.players[e.player].influence = e.influence;
             });
+
+
+            this.$events.on("beginPlayerTurn", () => {
+                this.waitingFor = {};
+            });
+
+            this.$events.on("counterablePlayerAction", (e) => {
+                this.waitingFor = {};
+                for (const [pid, player] of Object.entries(this.players)) {
+                    if (pid != e.player && player.influence.length > 0) {
+                        this.waitingFor[pid] = player.name;
+                    }
+                }
+            });
+
+            this.$events.on("playerActionStillCounterable", (e) => {
+                this.waitingFor = {};
+                for (const pid in e.players) {
+                    this.waitingFor[pid] = this.players[pid].name;
+                }
+            });
+
+            this.$events.on("challengeablePlayerAction", (e) => {
+                this.waitingFor = {};
+                for (const [pid, player] of Object.entries(this.players)) {
+                    if (pid != e.player && player.influence.length > 0) {
+                        this.waitingFor[pid] = player.name;
+                    }
+                }
+
+                console.log(this.waitingFor);
+            });
+
+            this.$events.on("playerPassed", (e) => {
+                delete this.waitingFor[e.player];
+            });
+
+            this.$events.on("playerWillCounter", (e) => {
+                delete this.waitingFor[e.challenger];
+            });
+
+            this.$events.on("playerCountered", (e) => {
+                this.waitingFor = {};
+                for (const [pid, player] of Object.entries(this.players)) {
+                    if (pid != e.challenger && player.influence.length > 0) {
+                        this.waitingFor[pid] = player.name;
+                    }
+                }
+            });
+
+            this.$events.on("playerChallenged", () => {
+                this.waitingFor = {};
+            });
+
         }
     },
     components: { PlayerPanel, ActionPanel, RulesPane, GameAdminPage, GameLog }
@@ -437,7 +495,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .panelContainer {
     display: flex;
     flex-direction: column;
