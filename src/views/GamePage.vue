@@ -125,7 +125,7 @@ export default {
             this.myPlayerID = arg.playerID;
             this.myGameID = arg.gameID;
             this.gameEvents = [];
-            
+
             this.inGame = true;
             if (this.myPlayerID != undefined) {
                 this.$router.push(`/game/${this.myGameID}/${this.myPlayerID}`);
@@ -147,7 +147,7 @@ export default {
                 }
             }
         },
-        
+
         handleFoundNextGame(event) {
             this.$router.push(`/game/${event.nextGameID}`);
         },
@@ -210,7 +210,7 @@ export default {
 
         addInternalHandlers() {
             this.$events.on("startGame", () => {
-                this.gameStarted  = true;
+                this.gameStarted = true;
             });
 
             this.$events.on("addPlayer", (e) => {
@@ -229,8 +229,14 @@ export default {
     },
 
     watch: {
-        $route (to, from) {
-            if (to.params.gameID != from.params.gameID || to.params.playerId != from.params.playerId) {
+        $route(to, from) {
+            // If the URL Changes, then we're probably entirely invalid state and should refresh.
+            if (to.params.gameId != from.params.gameId || to.params.playerId != from.params.playerId) {
+                // URL was probably just updated because of a join.
+                if (to.params.gameId == this.myGameID && to.params.playerId == this.myPlayerID) {
+                    return;
+                }
+
                 this.$ioSocket.emit('exitGame', this.myGameID);
                 this.reset();
                 this.connected = true;
