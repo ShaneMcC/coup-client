@@ -12,121 +12,124 @@
         -->
         </div>
 
-        <div v-if="gameLoaded">
-            <div v-if="isAdmin" class="gameAdmin">
-                <div v-if="false">
-                    <!-- TODO: I'd prefer this was a menu item not a button, but this works for now. -->
-                </div>
-                <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#adminCanvas" role="button" aria-controls="adminCanvas">
-                    Game Admin
-                </a>
-
-                <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="adminCanvas" aria-labelledby="adminCanvasLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="adminCanvasLabel">Game Admin for {{ myGameID }}</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div v-if="gameLoaded" class="panelContainer">
+            <div class="gamePanel">
+                <div v-if="isAdmin" class="gameAdmin">
+                    <div v-if="false">
+                        <!-- TODO: I'd prefer this was a menu item not a button, but this works for now. -->
                     </div>
-                    <div class="offcanvas-body">
-                        <GameAdminPage ref="adminPanel" :gameID="myGameID"></GameAdminPage>
-                    </div>
-                </div>
-            </div>
+                    <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#adminCanvas" role="button" aria-controls="adminCanvas">
+                        Game Admin
+                    </a>
 
-            <div v-if="players[myPlayerID]" class="viewerDetails">
-                You are playing as <strong>{{ players[myPlayerID].name }}</strong>
-            </div>
-            <div v-else class="viewerDetails">
-                You are spectating
-            </div>
-
-            <div class="players">
-                Players:
-
-                <div class="gameTable">
-                    <div v-if="gameStarted" class="deckView">
-                        <div class="playerPanels">
-                            <PlayerPanel :game="myGameID" :self="players[myPlayerID]" :player="deckPlayer"></PlayerPanel>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="adminCanvas" aria-labelledby="adminCanvasLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="adminCanvasLabel">Game Admin for {{ myGameID }}</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <GameAdminPage ref="adminPanel" :gameID="myGameID"></GameAdminPage>
                         </div>
                     </div>
-                    <div class="playerView">
-                        <div class="playerPanels">
-                            <PlayerPanel v-for="(player, playerID) in players" :key="playerID" :game="myGameID" :player="player" :self="players[myPlayerID]"></PlayerPanel>
+                </div>
 
-                            <div v-if="Object.keys(players).length == 0">
-                                <strong>There are currently no players in this game.</Strong>
+                <div v-if="players[myPlayerID]" class="viewerDetails">
+                    You are playing as <strong>{{ players[myPlayerID].name }}</strong>
+                </div>
+                <div v-else class="viewerDetails">
+                    You are spectating
+                </div>
+
+                <div class="players">
+                    Players:
+
+                    <div class="gameTable">
+                        <div v-if="gameStarted" class="deckView">
+                            <div class="playerPanels">
+                                <PlayerPanel :game="myGameID" :self="players[myPlayerID]" :player="deckPlayer"></PlayerPanel>
+                            </div>
+                        </div>
+                        <div class="playerView">
+                            <div class="playerPanels">
+                                <PlayerPanel v-for="(player, playerID) in players" :key="playerID" :game="myGameID" :player="player" :self="players[myPlayerID]"></PlayerPanel>
+
+                                <div v-if="Object.keys(players).length == 0">
+                                    <strong>There are currently no players in this game.</Strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions" v-if="!gameOver && players[myPlayerID]">
+                    <strong v-html="actionsMessage"></strong>
+                    <br>
+                    Available Actions:
+
+                    <div class="actionPanels">
+                        <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction"></ActionPanel>
+
+                        <div v-if="Object.keys(availableActions).length == 0" class="actionPanels">
+                            <strong>No actions available.</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions" v-if="gameOver && players[myPlayerID]">
+                    <strong v-html="actionsMessage"></strong>
+                    <br>
+                    <button v-if="!nextGameID" class="btn btn-success" @click="getNextGame">Create Next Game</button>
+                    <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game: {{ nextGameID }}</button>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#cheatSheetModal">
+                        Show Cheat Sheet
+                    </button>
+
+                    <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <RulesPane></RulesPane>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="logPanel flex-grow-1">
+                <div class="actions" v-if="players[myPlayerID]">
+                    <form class="form" @submit.prevent="sendChatMessage">
+                        <div class="d-flex flex-row align-items-center flex-wrap">
+                            <label for="chatMessage">Chat:</label>
+                            <input id="chatMessage" class="form-control w-auto mx-2" v-model="chatMessage">
 
-            <div class="actions" v-if="!gameOver && players[myPlayerID]">
-                <strong v-html="actionsMessage"></strong>
-                <br>
-                Available Actions:
-
-                <div class="actionPanels">
-                    <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction"></ActionPanel>
-
-                    <div v-if="Object.keys(availableActions).length == 0" class="actionPanels">
-                        <strong>No actions available.</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="actions" v-if="gameOver && players[myPlayerID]">
-                <strong v-html="actionsMessage"></strong>
-                <br>
-                <button v-if="!nextGameID" class="btn btn-success" @click="getNextGame">Create Next Game</button>
-                <button v-if="nextGameID" class="btn btn-success" @click="getNextGame">Join Next Game: {{ nextGameID }}</button>
-            </div>
-
-            <div class="actions">
-                <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#cheatSheetModal">
-                    Show Cheat Sheet
-                </button>
-
-                <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <RulesPane></RulesPane>
-                            </div>
+                            <button class="btn btn-sm btn-primary" type="submit">Send</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </div>
 
-            <div class="actions" v-if="players[myPlayerID]">
-                <form class="form" @submit.prevent="sendChatMessage">
-                    <div class="d-flex flex-row align-items-center flex-wrap">
-                        <label for="chatMessage">Chat:</label>
-                        <input id="chatMessage" class="form-control w-auto mx-2" v-model="chatMessage">
+                <GameLog ref="gameLog" @ready="gameLogReady" @setActionsMessage="(e) => actionsMessage = e"></GameLog>
 
-                        <button class="btn btn-sm btn-primary" type="submit">Send</button>
-                    </div>
-                </form>
-            </div>
+                <div class="gameEvents" v-if="isAdmin || !$appConfig.isProduction">
+                    Game Events
+                    <button class="btn btn-sm btn-primary" v-if="!showEvents" @click="showEvents = true">Show</button>
+                    <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
 
-            <GameLog ref="gameLog" @ready="gameLogReady" @setActionsMessage="(e) => actionsMessage = e"></GameLog>
-
-            <div class="gameEvents" v-if="isAdmin || !$appConfig.isProduction">
-                Game Events
-                <button class="btn btn-sm btn-primary" v-if="!showEvents" @click="showEvents = true">Show</button>
-                <button class="btn btn-sm btn-primary" v-if="showEvents" @click="showEvents = false">Hide</button>
-
-                <ul v-if="showEvents">
-                    <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">
-                        <span v-if="isAdmin && event.__type != 'showActions'">[<a href="#" @click.prevent="rollbackUntil(event.date)">&lt;&lt;R</a>] </span>
-                        <span v-if="isAdmin && event.__type == 'showActions'">[&nbsp;&nbsp;&nbsp;] </span>
-                        {{ displayEvent(event) }}
-                        <span v-if="event.__type == 'beginPlayerTurn'"><br><br></span>
-                    </li>
-                </ul>
+                    <ul v-if="showEvents">
+                        <li v-for="(event, eventID) in gameEvents/*.filter(e => e.__type != 'showActions')*/" :key="eventID" class="event">
+                            <span v-if="isAdmin && event.__type != 'showActions'">[<a href="#" @click.prevent="rollbackUntil(event.date)">&lt;&lt;R</a>] </span>
+                            <span v-if="isAdmin && event.__type == 'showActions'">[&nbsp;&nbsp;&nbsp;] </span>
+                            {{ displayEvent(event) }}
+                            <span v-if="event.__type == 'beginPlayerTurn'"><br><br></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -239,7 +242,7 @@ export default {
             } catch (e) {
                 console.log('Error parsing event for game: ', event);
                 console.log(e);
-                this.$emit('GameError', {'error': `There was an error parsing event (${event.__type}), game state may be inaccurate.`});
+                this.$emit('GameError', { 'error': `There was an error parsing event (${event.__type}), game state may be inaccurate.` });
             }
             if (this.$refs.gameLog) {
                 this.$refs.gameLog.handleEvent(event);
@@ -434,6 +437,27 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.panelContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1800px) {
+    .panelContainer {
+        flex-direction: row;
+    }
+
+    .gamePanel {
+        min-width: 1130px;
+        max-width: 1130px;
+
+        border-right: 1px solid lightgray;
+        padding-right: 25px;
+        margin-right: 25px;
+    }
+}
+
 .gameAdmin {
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -451,6 +475,8 @@ export default {
 
 li.event {
     font-family: monospace;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .players {
