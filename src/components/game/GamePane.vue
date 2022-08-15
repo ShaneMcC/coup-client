@@ -89,12 +89,12 @@
                     <button type="button" class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#cheatSheetModal">
                         Show Cheat Sheet
                     </button>
-
                     <div class="modal fade" id="cheatSheetModal" tabindex="-1" aria-labelledby="cheatSheetModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="cheatSheetModalLabel">Cheat Sheet</h5>
+                                    <button type="button" @click="popoutCheatSheet" class="btn-popout" aria-label="Popout"></button>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -277,6 +277,15 @@ export default {
         sendChatMessage() {
             this.$ioSocket.emit("action", this.myGameID, 'CHAT', this.chatMessage);
             this.chatMessage = '';
+        },
+
+        popoutCheatSheet() {
+            var cheatSheetModal = Modal.getInstance(document.getElementById('cheatSheetModal'));
+            if (cheatSheetModal) {
+                cheatSheetModal.hide();
+            }
+
+            window.open("/rules","_blank", "popup");
         },
 
         displayEvent(event) {
@@ -587,5 +596,25 @@ li.event {
     }
 
     width: 800px;
+}
+
+.btn-popout {
+    box-sizing: content-box;
+    width: 2em;
+    height: 2em;
+    // padding: 0.25em 0.25em;
+    padding: 0;
+    margin: 0 5px;
+    color: #000;
+    border: 0;
+    border-radius: 0.375rem;
+    background: transparent url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNzUycHQiIGhlaWdodD0iNzUycHQiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDc1MiA3NTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiA8Zz4KICA8cGF0aCBkPSJtNTY3Ljg1IDE5NS4yN2MwLTAuNDg0MzgtMC40ODQzNy0wLjk2NDg0LTAuNDg0MzctMS40NDkycy0wLjQ4NDM4LTAuOTY0ODQtMC40ODQzOC0xLjQ0OTJjMC0wLjQ4NDM4LTAuNDg0MzctMC45NjQ4NC0wLjk2NDg0LTEuNDQ5MiAwLTAuNDg0MzgtMC40ODQzOC0wLjQ4NDM4LTAuNDg0MzgtMC45NjQ4NC0wLjk2NDg0LTEuNDQ5Mi0yLjQxOC0yLjg5ODQtMy44NjcyLTMuODY3Mi0wLjQ4NDM4IDAtMC40ODQzOC0wLjQ4NDM4LTAuOTY0ODQtMC40ODQzOC0wLjQ4NDM3LTAuNDg0MzctMC45NjQ4NC0wLjQ4NDM3LTEuNDQ5Mi0wLjk2NDg0LTAuNDg0MzggMC0wLjk2NDg0LTAuNDg0MzgtMS40NDkyLTAuNDg0MzhzLTAuOTY0ODQtMC40ODQzOC0xLjQ0OTItMC40ODQzOGMtMC45NjQ4NCAwLTEuOTMzNi0wLjQ4NDM4LTIuODk4NC0wLjQ4NDM4bC0xMDQuMzggMC4wMDM5MDZjLTUuODAwOCAwLTExLjExMyAzLjM4MjgtMTMuNTMxIDkuMTgzNi0yLjQxOCA1LjMxNjQtMC45NjQ4NCAxMS41OTggMy4zODI4IDE1Ljk0NWw0Mi4wNDMgNDIuMDQzLTE0NC4wMSAxNDQuNDljLTUuODAwOCA1LjgwMDgtNS44MDA4IDE0Ljk4IDAgMjAuMjk3IDIuODk4NCAyLjg5ODQgNi43NjU2IDQuMzQ3NyAxMC4xNDggNC4zNDc3IDMuMzgyOCAwIDcuMjUtMS40NDkyIDEwLjE0OC00LjM0NzdsMTQ0LjAxLTE0NC4wMSA0Mi4wNDMgNDIuMDQzYzIuODk4NCAyLjg5ODQgNi4yODEyIDQuMzQ3NyAxMC4xNDggNC4zNDc3IDEuOTMzNiAwIDMuODY3Mi0wLjQ4NDM4IDUuMzE2NC0wLjk2NDg0IDUuMzE2NC0yLjQxOCA5LjE4MzYtNy43MzA1IDkuMTgzNi0xMy41MzFsLTAuMDAzOTA3LTEwNC44NmMwLjQ4MDQ3LTAuOTY4NzUgMC40ODA0Ny0xLjkzMzYgMC0yLjkwMjN6Ii8+CiAgPHBhdGggZD0ibTUwNC41NCAzNjMuOTJjLTguMjE0OCAwLTE0LjQ5NiA2LjI4MTItMTQuNDk2IDE0LjQ5NnYxNjAuOTJoLTI3Ny4zOHYtMjc3LjM4aDE2MC45MmM4LjIxNDggMCAxNC40OTYtNi4yODEyIDE0LjQ5Ni0xNC40OTYgMC04LjIxNDgtNi4yODEyLTE0LjQ5Ni0xNC40OTYtMTQuNDk2bC0xNzUuNDItMC4wMDM5MDZjLTguMjE0OCAwLTE0LjQ5NiA2LjI4MTItMTQuNDk2IDE0LjQ5NnYzMDYuMzhjMCA4LjIxNDggNi4yODEyIDE0LjQ5NiAxNC40OTYgMTQuNDk2aDMwNi4zOGM4LjIxNDggMCAxNC40OTYtNi4yODEyIDE0LjQ5Ni0xNC40OTZ2LTE3NS40MmMwLTguMjE0OC02LjI4MTItMTQuNDk2LTE0LjUtMTQuNDk2eiIvPgogPC9nPgo8L3N2Zz4K") center/1em auto no-repeat;
+    background-size: contain;
+    font-size: 0.875rem;
+    vertical-align: middle;
+    
+    html.dark-theme & {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
 }
 </style>

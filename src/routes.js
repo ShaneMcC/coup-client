@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import GamePage from "@/views/GamePage.vue";
 import AdminPage from "@/views/AdminPage.vue";
 import IndexPage from "@/views/IndexPage.vue";
+import RulesPage from "@/views/RulesPage.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 
 const routes = [
@@ -10,7 +11,7 @@ const routes = [
     { name: 'Game', path: "/game/:gameId([^/]+)", component: GamePage },
     { name: 'Play', path: "/game/:gameId([^/]+)/:playerId([^/]+)", component: GamePage },
     { name: 'Admin', path: "/admin", component: AdminPage },
-
+    { name: 'Rules', path: "/rules", component: RulesPage },
 
     // Fallback 404 page
     { name: '404', path: "/:notFound(.*)", component: PageNotFound },
