@@ -260,6 +260,12 @@ export default {
 
             this.$events.on("setDeck", (e) => {
                 this.deck = [...e.deck];
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `The game deck was shuffled.`
+                });
             });
 
             this.$events.on("allocateNextInfluence", (e) => {
