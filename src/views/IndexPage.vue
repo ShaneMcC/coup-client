@@ -10,7 +10,7 @@
                 with up to 10 people.
                 <br>
                 <small>
-                    (For 7/8 people, 1 extra copy of each card is added to the game, with 9/10 2 extra copies are added.)
+                    (For 1-6 players, 3 copies of each card are in the deck. For 7/8 people, 1 extra copy of each card is added to the game, with 9/10 2 extra copies are added.)
                 </small>
             </p>
             <p>
