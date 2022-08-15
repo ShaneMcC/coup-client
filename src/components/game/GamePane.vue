@@ -234,7 +234,13 @@ export default {
 
         handleEvent(event) {
             this.gameEvents.unshift(event);
-            this.$events.emit(event.__type, event);
+            try {
+                this.$events.emit(event.__type, event);
+            } catch (e) {
+                console.log('Error parsing event for game: ', event);
+                console.log(e);
+                this.$emit('GameError', {'error': `There was an error parsing event (${event.__type}), game state may be inaccurate.`});
+            }
             if (this.$refs.gameLog) {
                 this.$refs.gameLog.handleEvent(event);
             }

@@ -48,7 +48,20 @@ export default {
 
     methods: {
         handleEvent(event) {
-            this.$events.emit(event.__type, event);
+            if (!event.__type) { return; }
+
+            try {
+                this.$events.emit(event.__type, event);
+            } catch (e) {
+                console.log('Error parsing event for log: ', event);
+                console.log(e);
+
+                this.addToGameLog({
+                    date: new Date(),
+                    event: event,
+                    message: `<strong class="text-danger">There was an error displaying event (${event.__type}).</strong>`
+                });
+            }
         },
 
         addToGameLog(logItem) {
