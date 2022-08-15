@@ -4,9 +4,9 @@
             <div class="d-flex flex-row align-items-center flex-wrap">
                 <label for="playerName">Player Name:</label>
                 <input id="playerName" class="form-control w-auto mx-2" type="text" :value="playerName" @input="this.$emit('update:playerName', $event.target.value);">
-                <button class="btn btn-sm btn-success" @click.prevent="randomPlayerName">Random Name</button>
+                <button class="btn btn-sm btn-success" type="button" @click.prevent="randomPlayerName">Random Name</button>
                 &nbsp;
-                <button class="btn btn-sm btn-primary" type="submit">Join Game</button>
+                <button class="btn btn-sm btn-primary" name="submit" type="submit">Join Game</button>
             </div>
             <br>
         </form>
