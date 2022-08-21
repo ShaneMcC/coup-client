@@ -130,6 +130,7 @@
                             <span v-if="isAdmin && event.__type == 'showActions'">[&nbsp;&nbsp;&nbsp;] </span>
                             {{ displayEvent(event) }}
                             <span v-if="event.__type == 'beginPlayerTurn'"><br><br></span>
+                            <span v-if="event.__type == 'startGame'"><br><br></span>
                         </li>
                     </ul>
                 </div>

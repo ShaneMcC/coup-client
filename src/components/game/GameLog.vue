@@ -209,9 +209,37 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `Game started`,
+                    message: `Game setup started`,
                     actionMessage: true,
                     separator: true
+                });
+            });
+
+            this.$events.on("continueGameSetup", (e) => {
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `Game setup continuing`,
+                    actionMessage: true,
+                });
+            });
+
+            this.$events.on("setupMessage", (e) => {
+                const message = this.htmlEntities(e.message);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<strong>Setup Message:</strong> <span class="message">${message}</span>`
+                });
+            });
+
+            this.$events.on("gameReady", (e) => {
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `Game setup completed`,
+                    actionMessage: true,
                 });
             });
 
@@ -264,7 +292,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `The game deck was shuffled.`
+                    message: `The game deck was shuffled (${this.deck.length} card${this.deck.length != 1 ? 's' : ''}).`
                 });
             });
 
@@ -493,12 +521,22 @@ export default {
                 const playerName = this.htmlEntities(this.players[e.player].name);
 
                 var count = e.count ? e.count : 2;
-                this.addToGameLog({
-                    date: e.date,
-                    event: e,
-                    message: `<span class="player">${playerName}</span> is exchanging <span class="count">${count}</span> cards with the deck`,
-                    actionMessage: true
-                });
+                if (e.reason) {
+                    var reason = e.reason ? e.reason : 'Unknown';
+                    this.addToGameLog({
+                        date: e.date,
+                        event: e,
+                        message: `<span class="player">${playerName}</span> is exchanging <span class="count">${count}</span> cards with the deck because: <span class="reason">${reason}</span>`,
+                        actionMessage: true
+                    });
+                } else {
+                    this.addToGameLog({
+                        date: e.date,
+                        event: e,
+                        message: `<span class="player">${playerName}</span> is exchanging <span class="count">${count}</span> cards with the deck`,
+                        actionMessage: true
+                    });
+                }
             });
 
             this.$events.on("chatMessage", (e) => {
