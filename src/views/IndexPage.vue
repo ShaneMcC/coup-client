@@ -9,9 +9,14 @@
                 This website will allow you to play the social deduction game <a href="https://board-games-galore.fandom.com/wiki/Coup">Coup</a>
                 with up to 10 people.
                 <br>
-                <small>
-                    (For 1-6 players, 3 copies of each card are in the deck. For 7/8 people, 1 extra copy of each card is added to the game, with 9/10 2 extra copies are added.)
-                </small>
+            </p>
+            <p>
+                For 2 player games, each player picks 1 influence and then gets allocated 1 random one from a deck containing 1 of each influence. The first player starts with a single coin and the second player starts with 2.
+            </p>
+            <p>
+                For 3-10 player games, each player is allocated 2 random influences from the game deck and starts with 2 coins.
+                <br>
+                (For 3-6 players, 3 copies of each card are in the deck. For 7/8 people, 1 extra copy of each card is added to the game, with 9/10 2 extra copies are added.)
             </p>
             <p>
                 It is primarily designed for play with friends while on voice chat (such as Discord), but also can be played with just the
