@@ -224,6 +224,17 @@ export default {
                 });
             });
 
+            this.$events.on("enableVariant", (e) => {
+                const variant = this.htmlEntities(e.variant);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `Game variant enabled: ${variant}`,
+                    actionMessage: true,
+                });
+            });
+
             this.$events.on("setupMessage", (e) => {
                 const message = this.htmlEntities(e.message);
 
@@ -501,6 +512,46 @@ export default {
                     date: e.date,
                     event: e,
                     message: `<span class="player">${playerName}</span> failed the challenge by revealing <span class="influence ${e.influence}">${e.influence}</span>`
+                });
+            });
+
+            this.$events.on("playerCallingCoup", (e) => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+                const targetName = this.htmlEntities(this.players[e.target].name);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> is calling a coup against <span class="target">${targetName}</span>`
+                });
+            });
+
+            this.$events.on("coupSuccess", (e) => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+                const targetName = this.htmlEntities(this.players[e.target].name);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> coup against <span class="target">${targetName}</span> was successful.`
+                });
+            });
+
+            this.$events.on("coupFailed", (e) => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+                const targetName = this.htmlEntities(this.players[e.target].name);
+                var reason = this.htmlEntities(e.reason);
+
+                var influenceName = e.reason.match(/^Target player does not have ([^\s]+).$/)
+                if (influenceName) {
+                    var influence = influenceName[1];
+                    reason = `<span class="target">${targetName}</span> does not have <span class="influence ${influence}">${influence}</span>`
+                }
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> coup against <span class="target">${targetName}</span> did not succeed. (<span class="reason">${reason}</span>)`
                 });
             });
 
