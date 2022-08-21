@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div v-if="enabledVariants.length > 0" class="alert alert-primary alert-dismissible">
+            <strong>Note:</strong> This game has some rule variants enabled on top of the standard rules. This page will show rules including any modifications due to the enabled variants.
+            <br><br>
+            <strong>Variants Enabled:</strong> {{ enabledVariants.join(', ') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <div class="text-center">
             <div class="gameRules">
                 During your turn you can take exactly 1 action from the below list. You must coup if you have 10 or more coins.
@@ -11,7 +17,6 @@
                 Players are out of the game when they have no more influence remaining.
             </div>
         </div>
-        <hr>
         <div style="max-width: 100%; overflow-x: auto;">
             <table class="table table-bordered text-center align-middle">
                 <thead>
@@ -41,7 +46,10 @@
                     <tr>
                         <td>&mdash;</td>
                         <td>Coup</td>
-                        <td>Pay 7 coins<br><small>Make any player lose 1 influence</small></td>
+                        <td>Pay 7 coins<br>
+                        <small v-if="variants.CallTheCoup">Target a player and pick an influence for them to lose if they have it, otherwise they lose no influence</small>
+                        <small v-else>Make any player lose 1 influence</small>
+                        </td>
                         <td>&mdash;</td>
                     </tr>
 
@@ -93,6 +101,19 @@
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    props: ['variants'],
+
+    computed: {
+        enabledVariants() {
+            return Object.keys(this.variants).filter(v => this.variants[v] );
+        }
+    }
+}
+</script>
+
 
 <style scoped lang="scss">
 div.modal-content div.gameRules {

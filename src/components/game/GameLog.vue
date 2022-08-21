@@ -230,7 +230,7 @@ export default {
                 this.addToGameLog({
                     date: e.date,
                     event: e,
-                    message: `Game variant enabled: ${variant}`,
+                    message: `<strong>Game variant enabled:</strong> ${variant}`,
                     actionMessage: true,
                 });
             });

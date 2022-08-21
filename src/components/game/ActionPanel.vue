@@ -85,6 +85,8 @@ export default {
                 this.$emit('newActions', targetActions);
             } else if (this.action.target) {
                 this.$ioSocket.emit("action", this.myGameID, actionName, this.action.target);
+            } else if (this.actionID == 'STARTGAME') {
+                this.$emit('startGame');
             } else {
                 this.$ioSocket.emit("action", this.myGameID, actionName);
             }

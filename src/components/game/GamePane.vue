@@ -62,6 +62,15 @@
                 </div>
 
                 <div class="actions" v-if="!gameOver && players[myPlayerID]">
+                    <div v-if="enabledVariants.length > 0">
+                        <div class="alert alert-dark alert-dismissible">
+                            <strong>Note:</strong> This game has some rule variants enabled on top of the standard rules.
+                            <br><br>
+                            <strong>Variants Enabled:</strong> {{ enabledVariants.join(', ') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    
                     <strong v-html="actionsMessage"></strong>
                     <div v-if="Object.keys(waitingFor).length > 0">
                         <strong>Waiting for response from:</strong> {{ Object.values(waitingFor).join(', ') }}
@@ -70,11 +79,26 @@
                     Available Actions:
 
                     <div class="actionPanels">
-                        <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction"></ActionPanel>
+                        <ActionPanel v-for="(action, actionID) in availableActions" :key="actionID" :myGameID="myGameID" :myPlayerID="myPlayerID" :players="players" :action="action" :actionID="actionID" @newActions="newActions" @deleteAction="deleteAction" @startGame="startGame"></ActionPanel>
 
                         <div v-if="Object.keys(availableActions).length == 0" class="actionPanels">
                             <strong>No actions available.</strong>
                         </div>
+                    </div>
+
+                    <div v-if="setupOptions">
+                        Game Setup Options:
+
+                        <form>
+                            <div v-for="(optInfo, optID) in setupOptions" :key="optID">
+                                <div v-if="optInfo.type == 'boolean'" class="form-check">
+                                    <input class="form-check-input" type="checkbox" v-model="optInfo.value" id="setup_{{optID}}">
+                                    <label class="form-check-label" for="setup_{{optID}}">
+                                        {{ optInfo.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -98,7 +122,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <RulesPane></RulesPane>
+                                    <RulesPane :variants="variants"></RulesPane>
                                 </div>
                             </div>
                         </div>
@@ -170,6 +194,8 @@ export default {
             activePlayer: '',
             deck: [],
             waitingFor: {},
+            setupOptions: undefined,
+            variants: {},
 
             get isAdmin() {
                 return localStorage.getItem('isAdmin') || false;
@@ -188,6 +214,10 @@ export default {
                 "ready": true,
                 "actions": {},
             };
+        },
+
+        enabledVariants() {
+            return Object.keys(this.variants).filter(v => this.variants[v]);
         }
     },
 
@@ -271,6 +301,11 @@ export default {
             delete this.availableActions[actionID];
         },
 
+        startGame() {
+            // Technically we only need key/value, but meh.
+            this.$ioSocket.emit("action", this.myGameID, 'STARTGAME', { 'options': this.setupOptions });
+        },
+
         getNextGame() {
             this.$ioSocket.emit("getNextGame", this.myGameID);
         },
@@ -286,7 +321,19 @@ export default {
                 cheatSheetModal.hide();
             }
 
-            window.open("/rules","_blank", "popup");
+            var params = {};
+            if (Object.keys(this.variants).length) {
+                params['variants'] = this.variants;
+            }
+
+            const encodeDataToURL = (data) => {
+                return Object
+                    .keys(data)
+                    .map(value => `${value}=${encodeURIComponent(data[value] != Object(data[value]) ? data[value] : JSON.stringify(data[value]))}`)
+                    .join('&');
+            }
+
+            window.open(`/rules${Object.keys(params).length > 0 ? '?' + encodeDataToURL(params) : ''}`, "_blank", "popup");
         },
 
         displayEvent(event) {
@@ -357,6 +404,14 @@ export default {
                 }
             });
 
+            this.$events.on("gameSetupOptionsAvailable", (e) => {
+                this.setupOptions = e.options;
+            });
+
+            this.$events.on("enableVariant", (e) => {
+                this.variants[e.variant] = true;
+            });
+
             this.$events.on("gameOver", (e) => {
                 this.activePlayer = e.winner;
                 this.players[this.activePlayer].active = true;
@@ -371,6 +426,7 @@ export default {
 
             this.$events.on("startGame", () => {
                 this.gameStarted = true;
+                this.setupOptions = undefined;
 
                 for (const p in this.players) {
                     delete this.players[p]['actions']['KICK'];
@@ -615,7 +671,7 @@ li.event {
     background-size: contain;
     font-size: 0.875rem;
     vertical-align: middle;
-    
+
     html.dark-theme & {
         filter: invert(1) grayscale(100%) brightness(200%);
     }
