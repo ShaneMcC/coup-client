@@ -70,7 +70,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </div>
-                    
+
                     <strong v-html="actionsMessage"></strong>
                     <div v-if="Object.keys(waitingFor).length > 0">
                         <strong>Waiting for response from:</strong> {{ Object.values(waitingFor).join(', ') }}
@@ -92,8 +92,8 @@
                         <form>
                             <div v-for="(optInfo, optID) in setupOptions" :key="optID">
                                 <div v-if="optInfo.type == 'boolean'" class="form-check">
-                                    <input class="form-check-input" type="checkbox" v-model="optInfo.value" id="setup_{{optID}}">
-                                    <label class="form-check-label" for="setup_{{optID}}">
+                                    <input class="form-check-input" type="checkbox" v-model="optInfo.value" :id="'setup_' + optID">
+                                    <label class="form-check-label" :for="'setup_' + optID">
                                         {{ optInfo.name }}
                                     </label>
                                 </div>
@@ -443,6 +443,14 @@ export default {
 
             this.$events.on("playerSpentCoins", (e) => {
                 this.players[e.player].coins -= e.coins;
+            });
+
+            this.$events.on('playerAllocatedExtraLives', (e) => {
+                 this.players[e.player].lives = parseInt(e.lives);
+            });
+
+            this.$events.on('playerLostLife', (e) => {
+                this.players[e.player].lives -= 1;
             });
 
             this.$events.on("setDeck", (e) => {

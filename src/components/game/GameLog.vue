@@ -284,6 +284,26 @@ export default {
                 });
             });
 
+            this.$events.on('playerAllocatedExtraLives', e => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> was allocated <span class="lives">${e.lives}</span> lives`
+                });
+            });
+
+            this.$events.on('playerLostLife', e => {
+                const playerName = this.htmlEntities(this.players[e.player].name);
+
+                this.addToGameLog({
+                    date: e.date,
+                    event: e,
+                    message: `<span class="player">${playerName}</span> lost <span class="lives">${e.lives ? e.lives : 1}</span> lives`
+                });
+            });
+
             this.$events.on("allocateInfluence", (e) => {
                 const playerName = this.htmlEntities(this.players[e.player].name);
 

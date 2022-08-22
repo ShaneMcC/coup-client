@@ -9,6 +9,10 @@
         Coins: {{ player.coins }}
       </div>
 
+      <div v-if="player.lives !== undefined" class="lives">
+        Lives: {{ player.lives }}
+      </div>
+
       <div class="influenceWrapper">
         <div class="influenceList">
           <div class="influence" :class="influence" v-for="(influence, key) in player.influence" :key="key">
@@ -146,6 +150,7 @@ export default {
     }
 
     .coins,
+    .lives,
     .name {
       text-align: center;
     }
