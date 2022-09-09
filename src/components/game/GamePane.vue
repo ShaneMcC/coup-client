@@ -413,6 +413,7 @@ export default {
             });
 
             this.$events.on("gameOver", (e) => {
+                this.players[this.activePlayer].active = false;
                 this.activePlayer = e.winner;
                 this.players[this.activePlayer].active = true;
 
