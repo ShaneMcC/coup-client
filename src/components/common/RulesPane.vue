@@ -47,7 +47,7 @@
                         <td>&mdash;</td>
                         <td>Coup</td>
                         <td>Pay 7 coins<br>
-                        <small v-if="variants.CallTheCoup">Target a player and pick an influence for them to lose if they have it, otherwise they lose no influence</small>
+                        <small v-if="enabledVariants.CallTheCoup">Target a player and pick an influence for them to lose if they have it, otherwise they lose no influence</small>
                         <small v-else>Make any player lose 1 influence</small>
                         </td>
                         <td>&mdash;</td>
@@ -108,7 +108,7 @@ export default {
 
     computed: {
         enabledVariants() {
-            return Object.keys(this.variants).filter(v => this.variants[v] );
+            return this.variants ? Object.keys(this.variants).filter(v => this.variants[v] ) : [];
         }
     }
 }
