@@ -65,7 +65,7 @@
 
         <h1>Active Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
         <div class="gameList activeGames">
-            <div v-for="(game, gameID) in knownGames" :key="gameID" class="game" :class="gameClasses(game)">
+            <div v-for="[gameID, game] in knownGamesSorted" :key="gameID" class="game" :class="gameClasses(game)">
                 <h2>
                     <router-link :to="'/game/' + gameID">{{ gameID }}</router-link>
                 </h2>
@@ -103,11 +103,14 @@
 
         <h1>Saved Games <button class="btn btm-sm btn-success" @click="refresh">Refresh</button></h1>
         <div class="gameList savedGames">
-            <div v-for="(game, gameID) in savedGames" :key="gameID" class="game" :class="{ loaded: knownGames[gameID] != undefined }">
+            <div v-for="[gameID, game] in savedGamesSorted" :key="gameID" class="game" :class="{ loaded: knownGames[gameID] != undefined }">
                 <h2>{{ gameID }}</h2>
                 <div class="actions">
                     <button :disabled="knownGames[gameID]" class="btn btn-sm btn-primary" @click="loadGame(gameID)">Load Game</button>
                     <button class="btn btn-sm btn-danger" @click="removeSavedGame(gameID)">Delete</button>
+                </div>
+                <div class="meta">
+                    <strong>Created:</strong> {{ game.created }}
                 </div>
             </div>
         </div>
@@ -155,6 +158,16 @@ export default {
         this.$ioSocket.off("error", this.handleCommandError);
         this.$ioSocket.off("success", this.handleCommandSuccess);
         this.$ioSocket.off("gameEventsCollected", this.handleGameEventsCollected);
+    },
+
+    computed: {
+        savedGamesSorted() {
+            return Object.entries(this.savedGames).sort((a,b) => new Date(b[1].created) - new Date(a[1].created));
+        },
+
+        knownGamesSorted() {
+            return Object.entries(this.knownGames).sort((a,b) => new Date(b[1].created) - new Date(a[1].created));
+        }
     },
 
     methods: {
