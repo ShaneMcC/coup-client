@@ -784,7 +784,7 @@ li.event {
         }
     }
 
-    .counter {
+    .counter, .action {
         &.BLOCK_FOREIGN_AID {
             background-color: #{$duke-background-color};
             color: #{$duke-color};
