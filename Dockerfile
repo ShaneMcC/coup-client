@@ -1,4 +1,4 @@
-FROM node:latest AS install
+FROM node:lts AS install
 WORKDIR /app
 COPY ./package.json ./package-lock.json /app/
 RUN npm install
