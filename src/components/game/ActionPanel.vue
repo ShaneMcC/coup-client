@@ -100,8 +100,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
-
 
 button {
     padding: 10px 20px;

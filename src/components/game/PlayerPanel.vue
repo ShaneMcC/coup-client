@@ -63,8 +63,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/_variables.scss';
-
 .playerWrapper {
   min-width: 220px;
   padding: 10px;

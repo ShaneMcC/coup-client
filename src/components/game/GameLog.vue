@@ -660,7 +660,7 @@ li.event {
 
 <!-- This needs to be separate because vue doesn't actually know about these things 'cos they are in strings. -->
 <style lang="scss">
-@import '@/assets/_variables.scss';
+@use '@/assets/_variables.scss' as vars;
 
 .gameLog {
     ul {
@@ -676,7 +676,7 @@ li.event {
     /*
     color: grey;
 
-    li.event.chatMessage { 
+    li.event.chatMessage {
         color: black;
         html.dark-theme & {
             color: white;
@@ -764,45 +764,45 @@ li.event {
 
     .action {
         &.TAX {
-            background-color: #{$duke-background-color};
-            color: #{$duke-color};
+            background-color: #{vars.$duke-background-color};
+            color: #{vars.$duke-color};
         }
 
         &.EXCHANGE {
-            background-color: #{$ambassador-background-color};
-            color: #{$ambassador-color};
+            background-color: #{vars.$ambassador-background-color};
+            color: #{vars.$ambassador-color};
         }
 
         &.ASSASSINATE {
-            background-color: #{$assassin-background-color};
-            color: #{$assassin-color};
+            background-color: #{vars.$assassin-background-color};
+            color: #{vars.$assassin-color};
         }
 
         &.STEAL {
-            background-color: #{$captain-background-color};
-            color: #{$captain-color};
+            background-color: #{vars.$captain-background-color};
+            color: #{vars.$captain-color};
         }
     }
 
     .counter, .action {
         &.BLOCK_FOREIGN_AID {
-            background-color: #{$duke-background-color};
-            color: #{$duke-color};
+            background-color: #{vars.$duke-background-color};
+            color: #{vars.$duke-color};
         }
 
         &.BLOCK_STEAL_WITH_AMBASSADOR {
-            background-color: #{$ambassador-background-color};
-            color: #{$ambassador-color};
+            background-color: #{vars.$ambassador-background-color};
+            color: #{vars.$ambassador-color};
         }
 
         &.BLOCK_ASSASSINATE {
-            background-color: #{$contessa-background-color};
-            color: #{$contessa-color};
+            background-color: #{vars.$contessa-background-color};
+            color: #{vars.$contessa-color};
         }
 
         &.BLOCK_STEAL_WITH_CAPTAIN {
-            background-color: #{$captain-background-color};
-            color: #{$captain-color};
+            background-color: #{vars.$captain-background-color};
+            color: #{vars.$captain-color};
         }
     }
 

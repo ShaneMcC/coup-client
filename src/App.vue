@@ -78,24 +78,25 @@ html.dark-theme {
 </style>
 
 <style lang="scss">
-@import '~bootstrap/dist/css/bootstrap.css';
+@use 'bootstrap/dist/css/bootstrap.css';
 // @import "~bootstrap/scss/bootstrap";
 </style>
 
 <style lang="scss">
-@import '@/assets/_variables.scss';
+@use '@/assets/_variables.scss' as vars;
+@use "sass:color";
 
 html {
-  --assassin-background-color: #{$assassin-background-color};
-  --assassin-color: #{$assassin-color};
-  --ambassador-background-color: #{$ambassador-background-color};
-  --ambassador-color: #{$ambassador-color};
-  --captain-background-color: #{$captain-background-color};
-  --captain-color: #{$captain-color};
-  --contessa-background-color: #{$contessa-background-color};
-  --contessa-color: #{$contessa-color};
-  --duke-background-color: #{$duke-background-color};
-  --duke-color: #{$duke-color};
+  --assassin-background-color: #{vars.$assassin-background-color};
+  --assassin-color: #{vars.$assassin-color};
+  --ambassador-background-color: #{vars.$ambassador-background-color};
+  --ambassador-color: #{vars.$ambassador-color};
+  --captain-background-color: #{vars.$captain-background-color};
+  --captain-color: #{vars.$captain-color};
+  --contessa-background-color: #{vars.$contessa-background-color};
+  --contessa-color: #{vars.$contessa-color};
+  --duke-background-color: #{vars.$duke-background-color};
+  --duke-color: #{vars.$duke-color};
 }
 
 @mixin influence-colourings($influence, $background-color, $color, $highlightColour: white, $highlightPercentage: 25%) {
@@ -110,15 +111,15 @@ html {
 
     &:hover,
     &:active {
-      background-color: #{mix($highlightColour, $background-color, $highlightPercentage)};
+      background-color: #{color.mix($highlightColour, $background-color, $highlightPercentage)};
       color: $color;
     }
   }
 }
 
-@include influence-colourings('ASSASSIN', $assassin-background-color, $assassin-color, $highlightPercentage: 15%);
-@include influence-colourings('AMBASSADOR', $ambassador-background-color, $ambassador-color);
-@include influence-colourings('CAPTAIN', $captain-background-color, $captain-color);
-@include influence-colourings('CONTESSA', $contessa-background-color, $contessa-color);
-@include influence-colourings('DUKE', $duke-background-color, $duke-color, $highlightColour: black);
+@include influence-colourings('ASSASSIN', vars.$assassin-background-color, vars.$assassin-color, $highlightPercentage: 15%);
+@include influence-colourings('AMBASSADOR', vars.$ambassador-background-color, vars.$ambassador-color);
+@include influence-colourings('CAPTAIN', vars.$captain-background-color, vars.$captain-color);
+@include influence-colourings('CONTESSA', vars.$contessa-background-color, vars.$contessa-color);
+@include influence-colourings('DUKE', vars.$duke-background-color, vars.$duke-color, $highlightColour: black);
 </style>
