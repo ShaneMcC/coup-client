@@ -10,7 +10,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.7",
-    "core-js": "^3.43.0",
+    "core-js": "^3.44.0",
     "socket.io-client": "^4.8.1",
     "tiny-emitter": "^2.1.0",
     "unique-names-generator": "^4.7.1",
