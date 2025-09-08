@@ -24,7 +24,7 @@
     "@vue/cli-service": "~5.0.9",
     "eslint": "^9.35.0",
     "eslint-plugin-vue": "^10.4.0",
-    "sass": "^1.92.0",
+    "sass": "^1.92.1",
     "sass-loader": "^16.0.5"
   },
   "eslintConfig": {
