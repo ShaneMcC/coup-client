@@ -14,7 +14,7 @@
     "socket.io-client": "^4.8.1",
     "tiny-emitter": "^2.1.0",
     "unique-names-generator": "^4.7.1",
-    "vue": "^3.5.22",
+    "vue": "^3.5.23",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
