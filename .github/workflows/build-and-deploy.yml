@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Build and Deploy to Docker Registry
-        uses: mr-smithers-excellent/docker-build-push@v5
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: ${{ secrets.DOCKER_REPO }}
           tags: latest
